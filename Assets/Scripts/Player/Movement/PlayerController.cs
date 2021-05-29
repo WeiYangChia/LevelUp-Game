@@ -3,18 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Photon.Pun;
 using System;
-using Photon.Realtime;
 
 /// <summary>
 /// This class handles the movement of the characters
 /// </summary>
-public class PlayerController : MonoBehaviourPunCallbacks
+public class PlayerController : MonoBehaviour
 {
     // Parameters that define ID of the players
 
-    public int playerIndex;
     public string playerName;
     public int colorIndex;
 
@@ -56,18 +53,14 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public bool moveable = false;
     public float respawnThreshold;
 
-    public GameObject uiObject;
+    public GameObject countdownPanel;
     public GameObject question;
     public TextMeshProUGUI countdown;
 
     // Parameters for the players points
 
     public int points;
-    TextMeshProUGUI[] pointsUIList;
-
-    // PHOTON:
-
-    public PhotonView PV;
+    TextMeshProUGUI pointsUI;
 
     // The players username
 
@@ -78,17 +71,17 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         // Photon:
 
-        PV = GetComponent<PhotonView>();
-        pointsUIList = GameSetUp.GS.pointsUIList;
+        pointsUI = GameSetUp.GS.pointsUI;
         points = 0;
-        PV.RPC("curPlayerSetup", RpcTarget.All, gameObject.tag, colorIndex, playerIndex, playerName);
+
+        curPlayerSetup(gameObject.tag, colorIndex, playerName);
 
         //UI of the overall gameplay:
 
-        uiObject = GameSetUp.GS.uiObject;
+        countdownPanel = GameSetUp.GS.countdownPanel;
         countdown = GameSetUp.GS.countdown;
 
-        uiObject.SetActive(true);
+        countdownPanel.SetActive(true);
         speedEffect.Pause();
         sizeEffect.Pause();
         jumpEffect.Pause();
@@ -97,21 +90,16 @@ public class PlayerController : MonoBehaviourPunCallbacks
         anim = GetComponent<Animator>();
         username.GetComponent<TextMesh>().text = playerName;
 
-
         respawnPoint = transform.position;
         respawnThreshold = respawnPoint.y - 3;
 
         StartCoroutine("Countdown");
     }
 
-    // Photon Setup:
-
-    [PunRPC]
-    void curPlayerSetup(string tag, int color, int index, string name)
+    void curPlayerSetup(string tag, int color, string name)
     {
         this.tag = tag;
         this.colorIndex = color;
-        this.playerIndex = index;
         this.playerName = name;
 
     }
@@ -119,10 +107,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-        if (PV.IsMine)
-        {
-            // Controls the logic if moveable = true
-            if (moveable)
+        if (moveable)
             {
                 Moving();
                 Gravity();
@@ -133,7 +118,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
             {
                 anim.applyRootMotion = true;
             }
-        }
     }
 
     /// <summary>
@@ -160,13 +144,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
             // Checks if the player is in contact with the ground.
             if (isGrounded)
             {
-                PV.RPC("setWalking", RpcTarget.All, true);
+                setWalking(true);
                 anim.SetBool("isWalking", true);
             }
         }
         else
         {
-             PV.RPC("setWalking", RpcTarget.All, false);
+            setWalking(false);
              anim.SetBool("isWalking", false);
              anim.PlayInFixedTime("Move", -1, freeze);
         }
@@ -208,10 +192,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     /// </summary>
     void FixedUpdate()
     {
-       if (PV.IsMine)
-        {
-            // If the player falls beyond a certain threshold, respawns the character
-            if (transform.position.y < respawnThreshold && !respawning)
+       if (transform.position.y < respawnThreshold && !respawning)
             {
                 anim.applyRootMotion = false;
                 respawning = true;
@@ -219,14 +200,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 transform.position = respawnPoint;
                 moveable = false;
                 anim.SetBool("isWalking", false);
-                PV.RPC("setWalking", RpcTarget.All, false);
+                setWalking(false);
 
                 question.SetActive(false);
-                uiObject.SetActive(true);
+                countdownPanel.SetActive(true);
 
                 StartCoroutine("Countdown");
             }
-         }
     }
     /// <summary>
     /// Countdowns for the players respawning time.
@@ -243,7 +223,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
         else
         {
-            uiObject.GetComponent<Image>().color = new Color(0.965f, 0.275f, 0.196f, 0.396f);
+            countdownPanel.GetComponent<Image>().color = new Color(0.965f, 0.275f, 0.196f, 0.396f);
         }
 
         while (counter > 0)
@@ -272,7 +252,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         moveable = true;
         respawning = false;
-        uiObject.SetActive(false);
+        countdownPanel.SetActive(false);
     }
 
     /// <summary>
@@ -281,7 +261,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     /// <param name="enable">if set to <c>true</c> [enable].</param>
     public void boostSpeed(bool enable)
     {
-        PV.RPC("doBoostSpeed", RpcTarget.All, enable);
+        doBoostSpeed(enable);
     }
 
     /// <summary>
@@ -290,7 +270,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     /// <param name="enable">if set to <c>true</c> [enable].</param>
     public void boostSize(bool enable)
     {
-        PV.RPC("doBoostSize", RpcTarget.All, enable);
+        doBoostSize(enable);
     }
 
     /// <summary>
@@ -299,14 +279,14 @@ public class PlayerController : MonoBehaviourPunCallbacks
     /// <param name="enable">if set to <c>true</c> [enable].</param>
     public void boostJump(bool enable)
     {
-        PV.RPC("doBoostJump", RpcTarget.All, enable);
+        doBoostJump(enable);
     }
 
     /// <summary>
     /// Sets the walking animation of the character.
     /// </summary>
     /// <param name="isWalking">if set to <c>true</c> [is walking].</param>
-    [PunRPC]
+
     public void setWalking(bool isWalking)
     {
         anim.SetBool("isWalking", isWalking);
@@ -316,7 +296,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     /// Enables the speed boost effect when the player uses the speed powerup.
     /// </summary>
     /// <param name="enable">if set to <c>true</c> [enable].</param>
-    [PunRPC]
+
     public void doBoostSpeed(bool enable)
     {
         if (enable)
@@ -332,7 +312,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     /// Enables the size boost effect when the player uses the size powerup.
     /// </summary>
     /// <param name="enable">if set to <c>true</c> [enable].</param>
-    [PunRPC]
+
     public void doBoostSize(bool enable)
     {
         if (enable)
@@ -348,7 +328,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     /// Enables the jump boost effect when the player uses the jump powerup.
     /// </summary>
     /// <param name="enable">if set to <c>true</c> [enable].</param>
-    [PunRPC]
+
     public void doBoostJump(bool enable)
     {
         if (enable)
@@ -364,14 +344,12 @@ public class PlayerController : MonoBehaviourPunCallbacks
     /// <summary>
     /// Changes the points of the player.
     /// </summary>
-    /// <param name="playerIndex">Index of the player.</param>
     /// <param name="x">The x.</param>
-    [PunRPC]
-    public void ChangePoints(int playerIndex, int x)
-    {
 
+    public void ChangePoints(int x)
+    {
         points += x;
-        pointsUIList[playerIndex].SetText(points.ToString());
+        pointsUI.SetText(points.ToString());
     }
 
     /// <summary>

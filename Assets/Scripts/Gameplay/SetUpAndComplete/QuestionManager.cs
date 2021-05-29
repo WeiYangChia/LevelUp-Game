@@ -39,8 +39,10 @@ public class QuestionManager : MonoBehaviour
     void Start()
     {
         // Initialize settings:
-        Category = MapController.Category;
-        Difficulty = MapController.Difficulty;
+        // Category = MapController.Category;
+        // Difficulty = MapController.Difficulty;
+        Category = 0;
+        Difficulty = 1;
         ended = false;
 
 
@@ -92,7 +94,10 @@ public class QuestionManager : MonoBehaviour
             temp = UnityEngine.Random.Range(0, questions.Count);
             tempQid = questions[temp].ID;
         }
-        return questions[temp];
+
+        Question chosen = questions[temp];
+        chosen.timeLimit = getTimeLimit();
+        return chosen;
     }
 
 

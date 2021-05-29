@@ -199,7 +199,6 @@ public class SpecialBlock : MonoBehaviourPunCallbacks
         question.GetComponent<DoQuestion>().answered = false;
         question.GetComponent<DoQuestion>().correct = false;
         question.GetComponent<DoQuestion>().pointsAwardable = false;
-        question.GetComponent<DoQuestion>().playerTag = playerTag;
 
         // Set UI active
         question.SetActive(true);

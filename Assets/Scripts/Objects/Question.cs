@@ -29,6 +29,7 @@ public class Question
     public string Description;
     public Option Options;
     public string Correct;
+    public float timeLimit;
 
     //public int id
     //{

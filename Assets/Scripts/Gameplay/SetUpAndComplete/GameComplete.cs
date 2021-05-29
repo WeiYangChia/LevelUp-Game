@@ -94,19 +94,7 @@ public class GameComplete : MonoBehaviour
     {
         if (!initialized)
         {
-            for (int i = 1; i < 5; i++)
-            {
-                GameObject curPlayer = GameObject.FindWithTag("Player" + i.ToString());
-
-                if (curPlayer != null)
-                {
-                    players.Add(curPlayer.GetComponent<PlayerController>());
-                }
-                else
-                {
-                    break;
-                }
-            }
+            players.Add(GameObject.FindWithTag("Player").GetComponent<PlayerController>());
             initialized = true;
         }
     }

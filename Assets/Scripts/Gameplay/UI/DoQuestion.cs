@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using Photon.Pun;
 using System.Linq;
 using System;
 
@@ -40,13 +39,10 @@ public class DoQuestion : MonoBehaviour
     private float curTime;
 
     // Player related information:
-    GameObject player;
-    public string playerTag;
-    int playerIndex;
-    private PhotonView PV;
+    public GameObject player;
     
     // Question Manager:
-    private QuestionManager QM;
+    public QuestionManager QM;
 
     
     /// <summary>
@@ -57,17 +53,15 @@ public class DoQuestion : MonoBehaviour
         // Color Setup
         originalColor = background.color;
 
-        // Player Information
-        player = GameSetUp.GS.player;
-        playerIndex = GameSetUp.GS.playerIndex;
-        PV = player.GetComponent<PlayerController>().PV;
+        // // Player Information
+        // player = GameSetUp.GS.player;
 
-        // Setup Question Manager;
-        QM = GameObject.FindWithTag("GameController").GetComponent<QuestionManager>();
-        timeLimit = QM.getTimeLimit();
+        // // Setup Question Manager;
+        // QM = GameObject.FindWithTag("GameController").GetComponent<QuestionManager>();
+        // timeLimit = QM.getTimeLimit();
 
         // setup first question
-        setupNewQuestion();
+        // setupNewQuestion();
     }
 
     /// <summary>
@@ -105,10 +99,13 @@ public class DoQuestion : MonoBehaviour
     {
         // get new Question
         question = getQuestion();
+        timeLimit = question.timeLimit;
 
         // set description and other question parameters
         description.SetText(question.Description);
+        print(question.Description);
         string answer = question.Correct;
+        print(answer);
         int correctOption = Int32.Parse(answer);
 
         // set up Buttons with options
@@ -236,7 +233,7 @@ public class DoQuestion : MonoBehaviour
         if (pointsAwardable)
         {
             int points = Mathf.RoundToInt(curTime + 0.49f);
-            PV.RPC("ChangePoints", RpcTarget.All, playerIndex, points);
+            player.GetComponent<PlayerController>().ChangePoints(points);
         }
 
         answered = true;
@@ -262,7 +259,7 @@ public class DoQuestion : MonoBehaviour
         if (pointsAwardable)
         {
             int points = Mathf.FloorToInt(timeLimit / 3) * (-1);
-            PV.RPC("ChangePoints", RpcTarget.All, playerIndex, points);
+            player.GetComponent<PlayerController>().ChangePoints(points);
         }
 
         answered = true;

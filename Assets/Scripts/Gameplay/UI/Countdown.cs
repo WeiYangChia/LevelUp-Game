@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
-using Photon.Pun;
-using Photon.Realtime;
 
 /// <summary>
 /// This class handles the length(time) of the game.
@@ -32,7 +30,6 @@ public class Countdown : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-
         currentTime = startingTime;
         countdown.text = timeToString(currentTime);
         started = false;

@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
+
+
 /// <summary>
 /// This class handles the colour of the Astronaut that the player chooses
 /// </summary>
@@ -17,19 +18,17 @@ public class AstronautMarkerSet : MonoBehaviour
 
     // The parts of the ball character that the colour can be changed
     SkinnedMeshRenderer rend1;
-    PhotonView PV;
 
     // Start is called before the first frame update
     void Start()
     {
-        PV = GetComponent<PhotonView>();
-        PV.RPC("setColor", RpcTarget.All);
+        setColor();
     }
 
     /// <summary>
     /// Sets the colour of the astronaut character that the player has chosen.
     /// </summary>
-    [PunRPC]
+
     private void setColor()
     {
         // Determines which part of the astronaut character will change to the different colours

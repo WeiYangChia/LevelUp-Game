@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using Photon.Pun;
 
 /// <summary>
 /// This script is assigned to the active pad on each active block, to determine its behavior when it is assigned to a particular player.
 /// </summary>
 
-public class ActivatedBlock : MonoBehaviourPunCallbacks
+public class ActivatedBlock : MonoBehaviour
 {
 
     // original inactive block material
@@ -29,16 +28,12 @@ public class ActivatedBlock : MonoBehaviourPunCallbacks
     bool questionActivated = false;
 
     // Player Information
-    public int playerIndex;
     public int colorIndex;
     string playerTag;
     GameObject player;
 
     // Question
     GameObject question;
-
-    // Photon View
-    PhotonView PV;
 
     /// <summary>
     /// This function is called each time the ActivatedBlock script is enabled by the Platform
@@ -47,7 +42,6 @@ public class ActivatedBlock : MonoBehaviourPunCallbacks
     /// </summary>
     private void OnEnable()
     {
-        PV = GetComponent<PhotonView>();
         gameObject.tag = "Question";
 
         // Get Parent Block and Components
@@ -69,7 +63,7 @@ public class ActivatedBlock : MonoBehaviourPunCallbacks
         rend.materials = materials;
 
         // Initializes playerTag to identify correct Player
-        playerTag = "Player" + playerIndex;
+        playerTag = "Player";
     }
 
     /// <summary>
@@ -118,7 +112,6 @@ public class ActivatedBlock : MonoBehaviourPunCallbacks
         question.GetComponent<DoQuestion>().answered = false;
         question.GetComponent<DoQuestion>().correct = false;
         question.GetComponent<DoQuestion>().pointsAwardable = true;
-        question.GetComponent<DoQuestion>().playerTag = playerTag;
 
         // Set UI active
         question.SetActive(true);
@@ -154,7 +147,7 @@ public class ActivatedBlock : MonoBehaviourPunCallbacks
             else if (question.GetComponent<DoQuestion>().answered == true && question.GetComponent<DoQuestion>().correct == false)
             {
                 StartCoroutine("HighlightFadeOut");
-                PV.RPC("dropBlock", RpcTarget.All);
+                dropBlock();
                 yield return new WaitForSeconds(3);
                 Destroy(transform.parent.gameObject);
 
@@ -183,7 +176,7 @@ public class ActivatedBlock : MonoBehaviourPunCallbacks
                     StartCoroutine("HighlightFadeOut");
                 }
 
-                PV.RPC("dropBlock", RpcTarget.All);
+                dropBlock();
                 yield return new WaitForSeconds(3);
                 Destroy(transform.parent.gameObject);
 
@@ -243,7 +236,6 @@ public class ActivatedBlock : MonoBehaviourPunCallbacks
     /// A network event is called to ensure all players see that the block drops.
     /// </summary>
 
-    [PunRPC]
     void dropBlock()
     {
         Physics.IgnoreCollision(player.GetComponent<CharacterController>(), highlight.GetComponent<CapsuleCollider>(), false);

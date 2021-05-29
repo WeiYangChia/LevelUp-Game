@@ -24,23 +24,23 @@ public class GameSetUp : MonoBehaviour
     public int Difficulty;
 
     // Spawn points for each player
-    public Transform[] spawnPoints1;
-    public Transform[] spawnPoints2;
-    public Transform[] spawnPoints3;
-    public Transform[] spawnPoints4;
+    public Transform spawnPoint;
+    // public Transform[] spawnPoints1;
+    // public Transform[] spawnPoints2;
+    // public Transform[] spawnPoints3;
+    // public Transform[] spawnPoints4;
 
     // Parameters for instantiation of each avatar
-    public int playerIndex;
     public GameObject canvas;
-    public GameObject uiObject;
-    GameObject question;
+    public GameObject countdownPanel;
+    public GameObject question;
     public TextMeshProUGUI countdown;
     public GameObject player;
     public GameObject slot;
     public GameObject playerCam;
 
     // Points list in UI to track player points
-    public TextMeshProUGUI[] pointsUIList;
+    public TextMeshProUGUI pointsUI;
 
     /// <summary>
     /// This function is called at the very start of the game, to allow the script to access the choices made by players in the previous scene.
@@ -61,35 +61,37 @@ public class GameSetUp : MonoBehaviour
     void Start()
     {
         // Activate correct map based on mapIndex
-        mapIndex = MapController.mapIndex;
-        ArenaCon.GetComponent<ArenaController>().setUpMap(mapIndex);
+        // mapIndex = MapController.mapIndex;
+        // ArenaCon.GetComponent<ArenaController>().setUpMap(mapIndex);
 
-        // select correct spawnpoints based on map chosen
-        Transform[] spawnPoints = null;
-        switch (mapIndex)
-        {
-            case 0:
-                spawnPoints = spawnPoints1;
-                break;
+        // // select correct spawnpoints based on map chosen
+        // Transform[] spawnPoints = null;
+        // switch (mapIndex)
+        // {
+        //     case 0:
+        //         spawnPoints = spawnPoints1;
+        //         break;
 
-            case 1:
-                spawnPoints = spawnPoints2;
-                break;
+        //     case 1:
+        //         spawnPoints = spawnPoints2;
+        //         break;
 
-            case 2:
-                spawnPoints = spawnPoints3;
-                break;
+        //     case 2:
+        //         spawnPoints = spawnPoints3;
+        //         break;
 
-            case 3:
-                spawnPoints = spawnPoints4;
-                break;
-        }
+        //     case 3:
+        //         spawnPoints = spawnPoints4;
+        //         break;
+        // }
 
         // Initialize player avatar settings
-        playerIndex = (PhotonNetwork.LocalPlayer.ActorNumber - 1) % 4;
 
-        string curUserName = PhotonNetwork.LocalPlayer.NickName;
-        int avatarSelection = LobbySetUp.LS.playerList[curUserName];
+        // string curUserName = PhotonNetwork.LocalPlayer.NickName;
+        string curUserName = "Tester";
+
+        // int avatarSelection = LobbySetUp.LS.playerList[curUserName];
+        int avatarSelection = 21;
 
         string avatarPath = "";
 
@@ -113,16 +115,26 @@ public class GameSetUp : MonoBehaviour
         }
 
         // Instantiate correct avatar
-        player = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", avatarPath), spawnPoints[playerIndex].transform.position, Quaternion.identity);
+        print("create Player");
+        var player_prefab = Resources.Load(avatarPath);
+        player = (GameObject)Instantiate(player_prefab, spawnPoint.transform.position, Quaternion.identity);
+        player.tag = "Player";
+
 
         // Instantiate player camera and attach to player
-        playerCam = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Main Camera"), Vector3.zero, Quaternion.Euler(26.618f, 0f, 0f));
+        print("create Cam");
+        var cam_prefab = Resources.Load("Main Camera");
+        playerCam = (GameObject)Instantiate(cam_prefab, Vector3.zero, Quaternion.Euler(26.618f, 0f, 0f));
         playerCam.GetComponent<Camera>().enabled = true;
         playerCam.GetComponent<CameraFollow>().setTarget(player);
 
         // Instantion Question UI element and assign to player
-        question = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Question"), canvas.transform.position, Quaternion.identity);
-        question.GetComponent<DoQuestion>().tag = "Q" + (playerIndex + 1);
+        print("create Q");
+        var q_prefab = Resources.Load("Question");
+        question = (GameObject)Instantiate(q_prefab, canvas.transform.position, Quaternion.identity);
+        question.GetComponent<DoQuestion>().tag = "Q1";
+        question.GetComponent<DoQuestion>().player = player;
+        question.GetComponent<DoQuestion>().QM = gameObject.GetComponent<QuestionManager>();
         question.transform.SetParent(canvas.transform);
         question.SetActive(false);
 
@@ -131,6 +143,6 @@ public class GameSetUp : MonoBehaviour
         player.GetComponent<PlayerController>().question = question.gameObject;
         player.GetComponent<PlayerController>().colorIndex = avatarSelection % 10;
 
-        player.gameObject.tag = "Player" + (playerIndex + 1);
+        player.gameObject.tag = "Player";
     }
 }
