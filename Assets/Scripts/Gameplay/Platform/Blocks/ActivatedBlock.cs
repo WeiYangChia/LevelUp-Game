@@ -128,7 +128,7 @@ public class ActivatedBlock : MonoBehaviour
         question.SetActive(true);
 
         // Initialize and begin question counter
-        int counter = Mathf.RoundToInt(GameObject.FindWithTag("GameController").GetComponent<QuestionManager>().getTimeLimit());
+        int counter = Mathf.RoundToInt(GameObject.FindWithTag("GameController").GetComponent<QuestionManager>().getMaxTime());
         bool moveableChanged = false;
 
         while (counter > 0)

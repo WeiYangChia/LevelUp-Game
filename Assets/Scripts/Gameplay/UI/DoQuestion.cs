@@ -23,19 +23,29 @@ public class DoQuestion : MonoBehaviour
     public Button b3;
     public Button b4;
 
-    public Image CD;
-    public Image CDBG;
+    public Button submit;
+    public TextMeshProUGUI submitText;
+    public TextMeshProUGUI counterUI;
+
     public Image background;
     Color originalColor;
 
     // Question Parameters:
     private Question question;
 
+    
     public bool pointsAwardable;
+    public bool inQuestion = false;
     public bool answered = false; 
     public bool correct = false;
 
-    public float timeLimit;
+    public float bonusTimeLimit;
+    public bool bonusAwardable; 
+
+    private int normalPoints = 10;
+    private int bonusPoints = 5;
+    
+    private int maxTime;
     private float curTime;
 
     // Player related information:
@@ -52,16 +62,6 @@ public class DoQuestion : MonoBehaviour
     {
         // Color Setup
         originalColor = background.color;
-
-        // // Player Information
-        // player = GameSetUp.GS.player;
-
-        // // Setup Question Manager;
-        // QM = GameObject.FindWithTag("GameController").GetComponent<QuestionManager>();
-        // timeLimit = QM.getTimeLimit();
-
-        // setup first question
-        // setupNewQuestion();
     }
 
     /// <summary>
@@ -99,7 +99,8 @@ public class DoQuestion : MonoBehaviour
     {
         // get new Question
         question = getQuestion();
-        timeLimit = question.timeLimit;
+        bonusTimeLimit = question.bonusTimeLimit;
+        maxTime = question.maxTime;
 
         // set description and other question parameters
         description.SetText(question.Description);
@@ -146,7 +147,9 @@ public class DoQuestion : MonoBehaviour
         }
 
         // start question countdown
-        StartCoroutine("startCD");
+        inQuestion = true;
+        print(inQuestion);
+        StartCoroutine("startCounter");
     }
 
     /// <summary>
@@ -171,36 +174,58 @@ public class DoQuestion : MonoBehaviour
     /// It also updates the UI elements to indicate the time remaining for the question.
     /// </summary>
     /// <returns></returns>
-    IEnumerator startCD()
+    IEnumerator startCounter()
     {
-        float percentage;
+        bonusAwardable = true;
 
-        for (curTime = timeLimit; curTime > 0.0f; curTime -= Time.deltaTime)
-        {
-            percentage = curTime / timeLimit;
+        submitText.SetText("Submit (+5)");
+        submit.GetComponent<Image>().color = new Color (255,216,0,255);
 
-            if (percentage > 0.667)
-            {
-                CD.color = Color.green;
-            }
-            else if (percentage > 0.333)
-            {
-                CD.color = Color.yellow;
-            }
-            else
-            {
-                CD.color = Color.red;
+        //curTime in seconds
+
+        curTime = 0;
+        counterUI.text = "Time Elapsed: 0";
+
+        while (curTime < (maxTime + 1)){
+            yield return new WaitForSeconds(1);
+
+            curTime += 1;
+
+            counterUI.text = timeToString(curTime);
+
+            if (curTime > bonusTimeLimit){
+                // deactivate bonus points
+                bonusAwardable = false;
+
+                submitText.SetText("Submit");
+                submit.GetComponent<Image>().color = Color.green;
             }
 
-            CD.fillAmount = percentage;
-            CDBG.fillAmount = percentage;
-            yield return null;
+            //If the countdown runs out of time, then the question is unanswered and it is process accordingly
+            
+            if (curTime == maxTime){
+                if (!answered && !correct)
+                {
+                    Unanswered();
+                }
+            }
+
+            
         }
+    }
 
-        // If the countdown runs out of time, then the question is unanswered and it is process accordingly
-        if (!answered && !correct)
+    string timeToString(float time)
+    {
+        if (time > 60)
         {
-            Unanswered();
+            string min = Math.Floor(time / 60).ToString("0");
+            string sec = (time % 60).ToString("00");
+
+            return ("Time Elapsed: " + min + ":" + sec);
+        }
+        else
+        {
+            return ("Time Elapsed: " + time.ToString("0"));
         }
     }
 
@@ -232,14 +257,22 @@ public class DoQuestion : MonoBehaviour
 
         if (pointsAwardable)
         {
-            int points = Mathf.RoundToInt(curTime + 0.49f);
+            int points = normalPoints;
+
+            if (bonusAwardable){
+                points += bonusPoints;
+            }
+
             player.GetComponent<PlayerController>().ChangePoints(points);
         }
 
         answered = true;
         correct = true;
+        inQuestion = false;
 
         StartCoroutine("Disappear");
+
+        print("Correct");
     }
 
     /// <summary>
@@ -258,14 +291,22 @@ public class DoQuestion : MonoBehaviour
        
         if (pointsAwardable)
         {
-            int points = Mathf.FloorToInt(timeLimit / 3) * (-1);
+            int points = 0;
+
+            if (bonusAwardable){
+                points -= bonusPoints;
+            }
+
             player.GetComponent<PlayerController>().ChangePoints(points);
         }
 
         answered = true;
         correct = false;
+        inQuestion = false;
 
         StartCoroutine("FailBGChange");
+
+        print("Wrong");
     }
 
     /// <summary>
@@ -282,8 +323,11 @@ public class DoQuestion : MonoBehaviour
 
         answered = false;
         correct = false;
+        inQuestion = false;
 
         StartCoroutine("FailBGChange");
+
+        print("Unanswered");
 
     }
 
@@ -326,7 +370,7 @@ public class DoQuestion : MonoBehaviour
 
             yield return null;
         }
-
+        
         gameObject.SetActive(false);
     }
 

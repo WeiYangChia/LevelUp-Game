@@ -96,7 +96,8 @@ public class QuestionManager : MonoBehaviour
         }
 
         Question chosen = questions[temp];
-        chosen.timeLimit = getTimeLimit();
+        chosen.bonusTimeLimit = getBonusTimeLimit();
+        chosen.maxTime = getMaxTime();
         return chosen;
     }
 
@@ -126,18 +127,13 @@ public class QuestionManager : MonoBehaviour
     /// </summary>
     /// <returns></returns>
 
-    public float getTimeLimit()
+    public float getBonusTimeLimit()
     {
-        switch (Difficulty)
-        {
-            case 1:
-                return 5.0f;
-            case 2:
-                return 7.0f;
-            case 3:
-                return 9.0f;
-        }
-        return 0.0f;
+        return 30.0f;
+    }
+
+    public int getMaxTime(){
+        return 120;
     }
 
     /// <summary>

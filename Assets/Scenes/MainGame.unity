@@ -17475,6 +17475,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec3fd67d11f2e0b479cf950db865ca91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Question: {fileID: 0}
   bg: {fileID: 1381322130}
   countdown: {fileID: 193798535}
 --- !u!114 &1414151819

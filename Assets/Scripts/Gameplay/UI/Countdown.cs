@@ -22,6 +22,8 @@ public class Countdown : MonoBehaviour
     bool ended;
 
     GameObject GameController;
+    public GameObject Question;
+    private bool inQuestion;
 
     // UI of the timer 
     public Image bg;
@@ -37,14 +39,25 @@ public class Countdown : MonoBehaviour
         
 
         GameController = GameObject.FindWithTag("GameController");
+
+        Question = null;
     }
 
     // Update is called once per frame.
     private void Update()
     {
+        if (!started){
+            StartCoroutine(Delay());
+        }
 
-        StartCoroutine(Delay());
-        if (started)
+        if (Question == null){
+            Question = GameObject.FindWithTag("Q1");
+        }
+        else{
+            inQuestion = Question.GetComponent<DoQuestion>().inQuestion;
+        }
+
+        if (started && !inQuestion)
         {
             // Reduces the timer's value by 1 every second
             if (currentTime >= 10)
@@ -80,6 +93,9 @@ public class Countdown : MonoBehaviour
                 }
             }
 
+        }
+        else if (started && inQuestion){
+            countdown.text = "";
         }
     }
 

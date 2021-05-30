@@ -17,22 +17,26 @@ public class timeReward : MonoBehaviour
     public ParticleSystem particle1;
     public ParticleSystem particle2;
 
+    private bool taken;
+
     private void OnEnable()
     {
         particle1.Play();
         particle2.Play();
         GetComponent<Collider>().enabled = true;
+        taken = false;
     }
 
     void OnTriggerEnter(Collider other)
     {
         // Check if the tag of the colliding entity is a player
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player" && !taken)
         {
+            taken = true;
+            
             PlayerController PC = other.gameObject.GetComponent<PlayerController>();
 
             PC.ChangePoints(5);
-
             deactivate();
         } 
     }
