@@ -35,6 +35,12 @@ public class ActivatedBlock : MonoBehaviour
     // Question
     GameObject question;
 
+    // Time Reward
+    public bool timeReward;
+    GameObject reward;
+    int timeRewardLimit = 4;
+    timeReward rewardController;
+
     /// <summary>
     /// This function is called each time the ActivatedBlock script is enabled by the Platform
     /// It obtains references to necessary components on the parent block to be changed.
@@ -64,6 +70,11 @@ public class ActivatedBlock : MonoBehaviour
 
         // Initializes playerTag to identify correct Player
         playerTag = "Player";
+
+        giveTimeReward();
+        // if (timeReward){
+        //     giveTimeReward();
+        // }
     }
 
     /// <summary>
@@ -265,5 +276,48 @@ public class ActivatedBlock : MonoBehaviour
 
             parentBlock.transform.Translate(Vector3.down * .15f);
         }
+    }
+
+    private void giveTimeReward(){
+        claimTimeReward();
+
+        // Activate powerup
+        reward.SetActive(true);
+        rewardController.enabled = true;
+    }
+
+    private void claimTimeReward(){
+        reward = player = GameObject.FindWithTag("timeReward");
+        rewardController = reward.GetComponent<timeReward>();
+
+        reward.transform.parent = parentBlock.transform;
+        reward.transform.position = parentBlock.transform.position;
+        reward.transform.Translate(new Vector3(0, -0.75f, 0));
+
+        StartCoroutine(TimeRewardCounter());
+    }
+
+    IEnumerator TimeRewardCounter()
+    {
+        
+        rewardController.enabled = true;
+
+        int counter = rewardController.timeRewardLimit;
+
+        while (counter > -1)
+        {
+            rewardController.setTime(counter);
+            yield return new WaitForSeconds(1);
+            counter--;
+
+            if (counter == 0){
+                releaseTimeReward();
+                break;
+            }
+        }
+    }
+
+    private void releaseTimeReward(){
+        rewardController.deactivate();
     }
 }

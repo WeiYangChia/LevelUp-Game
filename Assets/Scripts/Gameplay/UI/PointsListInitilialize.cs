@@ -9,8 +9,8 @@ using UnityEngine.UI;
 public class PointsListInitilialize : MonoBehaviour
 {
     // UI of the points dispay
-    public GameObject[] borders;
-    public GameObject[] playerBoxes;
+    public GameObject border;
+    public GameObject playerBox;
     public Material blue;
     public Material pink;
     public Material green;
@@ -23,21 +23,9 @@ public class PointsListInitilialize : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // playerList = LobbySetUp.LS.playerList;
+        PlayerController PC = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
 
-        // int i = 0;
-        // foreach (KeyValuePair<string, int> player in playerList)
-        // {
-
-        //     setUpBoxColor(i, player.Value);
-
-        //     if (player.Key == Login.currentUser.username)
-        //     {
-        //         setUpHighlight(i);
-        //     }
-
-        //     i++;
-        // }
+        setUpBoxColor(PC.colorIndex);
     }
 
     /// <summary>
@@ -45,42 +33,40 @@ public class PointsListInitilialize : MonoBehaviour
     /// </summary>
     /// <param name="index">The index.</param>
     /// <param name="choice">The choice.</param>
-    // void setUpBoxColor(int index, int choice)
-    // {
-    //     playerBoxes[index].SetActive(true);
-    //     int color = choice % 10;
-    //     Color chosen = Color.white;
+    void setUpBoxColor(int colorIndex)
+    {
+        Color chosen = Color.white;
 
-    //     // Sets up the colour of the points box based on the user's colour.
-    //     switch (color)
-    //     {
-    //         case 1:
-    //             chosen = blue.color;
-    //             break;
+        // Sets up the colour of the points box based on the user's colour.
+        switch (colorIndex)
+        {
+            case 1:
+                chosen = blue.color;
+                break;
 
-    //         case 2:
-    //             chosen = pink.color;
-    //             break;
+            case 2:
+                chosen = pink.color;
+                break;
 
-    //         case 3:
-    //             chosen = green.color;
-    //             break;
+            case 3:
+                chosen = green.color;
+                break;
 
-    //         case 4:
-    //             chosen = yellow.color;
-    //             break;
+            case 4:
+                chosen = yellow.color;
+                break;
 
-    //         case 5:
-    //             chosen = purple.color;
-    //             break;
+            case 5:
+                chosen = purple.color;
+                break;
 
-    //         case 6:
-    //             chosen = brown.color;
-    //             break;
-    //     }
+            case 6:
+                chosen = brown.color;
+                break;
+        }
 
-    //     playerBoxes[index].GetComponent<Image>().color = chosen;
-    // }
+        playerBox.GetComponent<Image>().color = chosen;
+    }
 
     /// <summary>
     /// Highlights the box of each user based on their colour.

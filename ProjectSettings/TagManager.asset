@@ -18,6 +18,7 @@ TagManager:
   - GameTimer
   - GameOver
   - EmailLogin
+  - timeReward
   layers:
   - Default
   - TransparentFX
