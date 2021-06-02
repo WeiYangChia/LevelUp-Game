@@ -27,7 +27,7 @@ public class QuestionManager : MonoBehaviour
 
     // Responses and Questions:
     public Dictionary<string, int> responses = new Dictionary<string, int>();
-    public List<Question> questions = new List<Question>();
+    public List<string> questions = new List<string>();
 
     //Phton View
     private PhotonView PV;
@@ -45,32 +45,13 @@ public class QuestionManager : MonoBehaviour
         Difficulty = 1;
         ended = false;
 
+        string path = "Assets/Resources/Question_Source";
 
-        // Craft URL and fetch from DataBase
-        string QuestionUrl = "https://quizguyz.firebaseio.com/Questions/";
-
-        switch (Category)
+        foreach (string file in System.IO.Directory.GetFiles(path))
         {
-            case 0:
-                QuestionUrl += "Math/";
-                break;
-            case 1:
-                QuestionUrl += "Science/";
-                break;
-            case 2:
-                QuestionUrl += "Geography/";
-                break;
-            case 3:
-                QuestionUrl += "General/";
-                break;
+            questions.Add(file.Replace("Assets/Resources/Question_Source\\", "").Replace(".meta",""));
         }
-
-        QuestionUrl += (Difficulty).ToString();
-        QuestionUrl += ".json";
-        RestClient.Get(url: QuestionUrl).Then(onResolved: response =>
-        {
-            questions = JsonConvert.DeserializeObject<List<Question>>(response.Text);
-        });
+            
     }
 
     /// <summary>
@@ -78,7 +59,7 @@ public class QuestionManager : MonoBehaviour
     /// </summary>
     /// <returns></returns>
 
-    public Question getRandomQuestion()
+    public Hashtable getRandomQuestion()
     {
         // Unlikely scenario: Player has answered all questions in the question bank
         if (responses.Count == questions.Count)
@@ -87,17 +68,19 @@ public class QuestionManager : MonoBehaviour
         }
 
         // Randomize and return appropriate question
-        int tempQid = -1;
+        string tempQid = "";
         int temp = -1;
 
-        while (tempQid == -1 || responses.ContainsKey(tempQid.ToString())) {
+        while (tempQid == "" || responses.ContainsKey(tempQid)) {
             temp = UnityEngine.Random.Range(0, questions.Count);
-            tempQid = questions[temp].ID;
+            tempQid = questions[temp];
+            print(questions[temp]);
         }
 
-        Question chosen = questions[temp];
-        chosen.bonusTimeLimit = getBonusTimeLimit();
-        chosen.maxTime = getMaxTime();
+        Hashtable chosen = new Hashtable();
+        chosen.Add("ID",questions[temp]);
+        chosen.Add("bonusTimeLimit"  ,getBonusTimeLimit());
+        chosen.Add("maxTime", getMaxTime());
         return chosen;
     }
 
@@ -108,9 +91,9 @@ public class QuestionManager : MonoBehaviour
     /// <param name="questionNum"></param>
     /// <param name="resp"></param>
 
-    public void recordResponse(int questionNum, int resp)
+    public void recordResponse(string questionNum, int resp)
     {
-        responses.Add(questionNum.ToString(), resp);
+        responses.Add(questionNum, resp);
     }
 
     /// <summary>

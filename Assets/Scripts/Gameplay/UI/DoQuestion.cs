@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System.Linq;
 using System;
 
+
 /// <summary>
 /// This script is used to determine the behavior of the Question UI for each player.
 /// After obtaining a random question from the Question Manager, it displays information in the respective UI elements.
@@ -18,6 +19,7 @@ public class DoQuestion : MonoBehaviour
     public TextMeshProUGUI description;
     Button[] buttons = new Button[4];
 
+    public RawImage QImage;
     public Button b1;
     public Button b2;
     public Button b3;
@@ -31,7 +33,7 @@ public class DoQuestion : MonoBehaviour
     Color originalColor;
 
     // Question Parameters:
-    private Question question;
+    private Hashtable question;
 
     
     public bool pointsAwardable;
@@ -99,15 +101,15 @@ public class DoQuestion : MonoBehaviour
     {
         // get new Question
         question = getQuestion();
-        bonusTimeLimit = question.bonusTimeLimit;
-        maxTime = question.maxTime;
+        bonusTimeLimit = (float)question["bonusTimeLimit"];
+        maxTime = (int)question["maxTime"];
 
         // set description and other question parameters
-        description.SetText(question.Description);
-        print(question.Description);
-        string answer = question.Correct;
+        description.SetText("Choose the best option of the 4!");
+        QImage.texture = (Texture2D)question["Question"];
+        int answer = (int)question["Correct"];
         print(answer);
-        int correctOption = Int32.Parse(answer);
+        int correctOption = answer;
 
         // set up Buttons with options
         buttons[0] = b1;
@@ -122,19 +124,19 @@ public class DoQuestion : MonoBehaviour
             switch (i)
             {
                 case 0:
-                    buttons[i].transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().SetText(question.Options.one);
+                    buttons[i].transform.GetChild(1).gameObject.GetComponent<RawImage>().texture = (Texture2D)question[0];
                     break;
                 case 1:
-                    buttons[i].transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().SetText(question.Options.two);
+                    buttons[i].transform.GetChild(1).gameObject.GetComponent<RawImage>().texture = (Texture2D)question[1];
                     break;
                 case 2:
-                    buttons[i].transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().SetText(question.Options.three);
+                    buttons[i].transform.GetChild(1).gameObject.GetComponent<RawImage>().texture = (Texture2D)question[2];
                     break;
                 case 3:
-                    buttons[i].transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().SetText(question.Options.four);
+                    buttons[i].transform.GetChild(1).gameObject.GetComponent<RawImage>().texture = (Texture2D)question[3];
                     break;
             }
-            if (correctOption == (i+1))
+            if (correctOption == (i))
             {
                 // set correct option listener on button
                 buttons[i].onClick.AddListener(delegate { Correct(index); });
@@ -157,11 +159,80 @@ public class DoQuestion : MonoBehaviour
     /// </summary>
     /// <returns></returns>
 
-    private Question getQuestion()
+    private Hashtable getQuestion()
     {
+        Hashtable tempData = new Hashtable();
+        tempData = QM.getRandomQuestion();
+        List<Texture2D> distractors = new List<Texture2D>();
+        List<Texture2D> choice4 = new List<Texture2D>();
+        string filename = "Assets/Resources/Question_Source\\Tr221\\Tr221Q.png";
+        var rawData= System.IO.File.ReadAllBytes(filename);
+        Texture2D tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
+
+        string path = "Assets/Resources/Question_Source\\"+(string)tempData["ID"];
+
+        foreach (string file in System.IO.Directory.GetFiles(path))
+        {
+            if (!file.Contains(".meta"))
+            {
+                if (file.Replace(path,"").Contains("C")){
+                    filename = file;
+                    rawData = System.IO.File.ReadAllBytes(filename);
+                    tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
+                    tex.LoadImage(rawData);
+                    choice4.Add(tex);
+                    print(filename+ " Is correct");
+                }
+                else if (file.Replace(path,"").Contains("Q"))
+                {
+                    filename = file;
+                    rawData = System.IO.File.ReadAllBytes(filename);
+                    tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
+                    tex.LoadImage(rawData);
+                    tempData.Add("Question", tex);
+                    print(filename+ " Is Question");
+                }
+                else
+                {
+                    filename = file;
+                    rawData = System.IO.File.ReadAllBytes(filename);
+                    tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
+                    tex.LoadImage(rawData);
+                    distractors.Add(tex);
+                    print(filename+ " Is Distractor");
+                }
+            }
+        }
+        int temp;
+        Texture2D tempTex;
+        for (int i = 0; i < 3; i++)
+        {
+            temp = UnityEngine.Random.Range(0, distractors.Count);
+            tempTex = distractors[temp];
+            distractors.Remove(tempTex);
+            choice4.Add(tempTex);
+        }
+        List<int> numbers = new List<int>();
+        for (int i = 0; i < 4; i++)
+        {
+            numbers.Add(i);
+        }
+        for (int i = 0; i < 4; i++)
+        {
+            temp = UnityEngine.Random.Range(0, numbers.Count);
+            print(numbers[temp]);
+            if (numbers[temp] == 0)
+            {
+                tempData.Add("Correct", i);
+                print(i.ToString() + "is correct");
+            }
+            tempData.Add(i, choice4[numbers[temp]]);
+            numbers.Remove(temp);
+        }
+
         if (QM != null)
         {
-            return QM.getRandomQuestion();
+            return tempData;
         }
         else
         {
@@ -186,7 +257,7 @@ public class DoQuestion : MonoBehaviour
         curTime = 0;
         counterUI.text = "Time Elapsed: 0";
 
-        while (curTime < (maxTime + 1)){
+        while (curTime < (maxTime + 1)&& inQuestion) {
             yield return new WaitForSeconds(1);
 
             curTime += 1;
@@ -252,7 +323,7 @@ public class DoQuestion : MonoBehaviour
 
     void Correct(int index)
     {
-        QM.recordResponse(question.ID, index);
+        QM.recordResponse((string)question["ID"], index);
         resetButtons();
 
         if (pointsAwardable)
@@ -285,7 +356,7 @@ public class DoQuestion : MonoBehaviour
 
     void Wrong(int index)
     {
-        QM.recordResponse(question.ID, index);
+        QM.recordResponse((string)question["ID"], index);
         resetButtons();
 
        
@@ -318,7 +389,7 @@ public class DoQuestion : MonoBehaviour
 
     void Unanswered()
     {
-        QM.recordResponse(question.ID, -1);
+        QM.recordResponse((string)question["ID"], -1);
         resetButtons();
 
         answered = false;
