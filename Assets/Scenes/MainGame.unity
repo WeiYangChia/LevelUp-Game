@@ -27444,20 +27444,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1414151822}
     m_Modifications:
-    - target: {fileID: 610824638963705785, guid: e5bca2c21ec6433488fde0d077cf4868,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 866329535213037240, guid: e5bca2c21ec6433488fde0d077cf4868,
         type: 3}
       propertyPath: m_Name
       value: Question Panel
-      objectReference: {fileID: 0}
-    - target: {fileID: 866329535213037240, guid: e5bca2c21ec6433488fde0d077cf4868,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 866329535213037247, guid: e5bca2c21ec6433488fde0d077cf4868,
         type: 3}
@@ -27568,11 +27558,6 @@ PrefabInstance:
         type: 3}
       propertyPath: viewIdField
       value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6423462786489941328, guid: e5bca2c21ec6433488fde0d077cf4868,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -345
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5bca2c21ec6433488fde0d077cf4868, type: 3}

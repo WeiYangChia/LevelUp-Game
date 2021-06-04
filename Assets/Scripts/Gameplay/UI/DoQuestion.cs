@@ -32,6 +32,8 @@ public class DoQuestion : MonoBehaviour
     public Image background;
     Color originalColor;
 
+    private Button prev;
+
     // Question Parameters:
     private Hashtable question;
 
@@ -55,8 +57,9 @@ public class DoQuestion : MonoBehaviour
     
     // Question Manager:
     public QuestionManager QM;
+    public mouseHeatMap HMap;
 
-    
+
     /// <summary>
     /// Start is callled at the very beginning, to intialize all required parameters and setup the first quesiton.
     /// </summary>
@@ -64,6 +67,7 @@ public class DoQuestion : MonoBehaviour
     {
         // Color Setup
         originalColor = background.color;
+        HMap = gameObject.GetComponent<mouseHeatMap>();
     }
 
     /// <summary>
@@ -115,39 +119,18 @@ public class DoQuestion : MonoBehaviour
         buttons[0] = b1;
         buttons[1] = b2;
         buttons[2] = b3;
-        buttons[3] = b4;
+        buttons[3] = b4;   
 
         // set listeners of the buttons, to determine which corresponds to the wrong and right answers
-        for (int i = 0; i < 4; i++)
-        {
-            int index = i;
-            switch (i)
-            {
-                case 0:
-                    buttons[i].transform.GetChild(1).gameObject.GetComponent<RawImage>().texture = (Texture2D)question[0];
-                    break;
-                case 1:
-                    buttons[i].transform.GetChild(1).gameObject.GetComponent<RawImage>().texture = (Texture2D)question[1];
-                    break;
-                case 2:
-                    buttons[i].transform.GetChild(1).gameObject.GetComponent<RawImage>().texture = (Texture2D)question[2];
-                    break;
-                case 3:
-                    buttons[i].transform.GetChild(1).gameObject.GetComponent<RawImage>().texture = (Texture2D)question[3];
-                    break;
-            }
-            if (correctOption == (i))
-            {
-                // set correct option listener on button
-                buttons[i].onClick.AddListener(delegate { Correct(index); });
-            }
-            else
-            {
-                // set wrong option listerner on button
-                buttons[i].onClick.AddListener(delegate { Wrong(index); });
-            }   
-        }
 
+        int i = 0;
+        foreach (Button button in buttons)
+        {
+            button.onClick.AddListener(delegate { TaskOnClick(button); });
+            button.transform.GetChild(1).gameObject.GetComponent<RawImage>().texture = (Texture2D)question[i];
+            i++;
+        }
+        submit.onClick.AddListener(SubmitClick);
         // start question countdown
         inQuestion = true;
         print(inQuestion);
@@ -312,7 +295,6 @@ public class DoQuestion : MonoBehaviour
             buttons[i].onClick.RemoveAllListeners();
         }
     }
-
     /// <summary>
     /// This function is called when the correct button is clicked.
     /// It records the player's response and awards points accordingly
@@ -320,65 +302,74 @@ public class DoQuestion : MonoBehaviour
     /// Finally, it deactivates the question UI
     /// </summary>
     /// <param name="index"></param>
-
-    void Correct(int index)
+    void TaskOnClick(Button buttonSel)
     {
-        QM.recordResponse((string)question["ID"], index);
+        if (buttons.Contains(buttonSel))
+        {
+            foreach (Button button in buttons)
+            {
+                if (button == buttonSel)
+                {
+                    button.gameObject.SetActive(true);
+                    button.Select();
+                    prev = button;
+                }
+            }
+        }
+    }
+
+    void SubmitClick()
+    {
+        prev.gameObject.SetActive(true);
+        prev.Select();
+        int count = Array.IndexOf(buttons,prev);
+        bool answer = (count == (int)question["Correct"]);
+
+        Hashtable toSend = new Hashtable;
+
+        foreach (Button button in buttons)
+        {
+        }
+
+        QM.recordResponse((string)question["ID"], count);
         resetButtons();
 
         if (pointsAwardable)
         {
-            int points = normalPoints;
+            int points = normalPoints* Convert.ToInt32(answer);
 
-            if (bonusAwardable){
-                points += bonusPoints;
+            if (bonusAwardable)
+            {
+                if (answer)
+                {
+                    points += bonusPoints;
+                    print("Corect");
+                }else
+                {
+                    points -= bonusPoints;
+                    print("Wrong");
+                }
+                
             }
-
             player.GetComponent<PlayerController>().ChangePoints(points);
         }
+        List<List<int>> test = new List<List<int>>();
+        test=HMap.getMaps();
 
         answered = true;
-        correct = true;
+        correct = answer;
         inQuestion = false;
-
-        StartCoroutine("Disappear");
-
-        print("Correct");
-    }
-
-    /// <summary>
-    /// This function is called when the wrong button is clicked.
-    /// It records the player's response and deducts points accordingly
-    /// It also updates the answered and correct parameters, which determines the behavior of the block (drop immediately)
-    /// Finally, it allows the question UI to transition to the respawn UI.
-    /// </summary>
-    /// <param name="index"></param>
-
-    void Wrong(int index)
-    {
-        QM.recordResponse((string)question["ID"], index);
-        resetButtons();
-
-       
-        if (pointsAwardable)
+        if (answer)
         {
-            int points = 0;
-
-            if (bonusAwardable){
-                points -= bonusPoints;
-            }
-
-            player.GetComponent<PlayerController>().ChangePoints(points);
+            StartCoroutine("Disappear");
         }
-
-        answered = true;
-        correct = false;
-        inQuestion = false;
-
-        StartCoroutine("FailBGChange");
-
-        print("Wrong");
+        else
+        {
+            StartCoroutine("FailBGChange");
+        }
+        
     }
+
 
     /// <summary>
     /// This function is called when the countdown expires without a player response
