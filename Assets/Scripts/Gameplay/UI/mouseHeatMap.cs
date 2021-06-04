@@ -42,11 +42,19 @@ public class mouseHeatMap : MonoBehaviour
 
     public List<List<int>> getMaps()
     {
-        foreach (List<float> item in positions)
+        if (positions.Count > 0)
         {
-            mapping[(int)item[0]][(int)item[1]] += 1;
+            foreach (List<float> item in positions)
+            {
+                if (item[0]<800 && item[1] < 400)
+                {
+                    mapping[(int)item[0]][(int)item[1]] += 1;
+                }
+                
+            }
+            newMaps();
+            return mapping;
         }
-        newMaps();
         return mapping;
     }
 

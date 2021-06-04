@@ -93,7 +93,7 @@ public class PlayerController : MonoBehaviour
         respawnPoint = transform.position;
         respawnThreshold = respawnPoint.y - 3;
 
-        StartCoroutine("Countdown");
+        StartCoroutine("Countdown",3);
     }
 
     void curPlayerSetup(string tag, int color, string name)
@@ -205,15 +205,14 @@ public class PlayerController : MonoBehaviour
                 question.SetActive(false);
                 countdownPanel.SetActive(true);
 
-                StartCoroutine("Countdown");
+                StartCoroutine("Countdown",1);
             }
     }
     /// <summary>
     /// Countdowns for the players respawning time.
     /// </summary>
-    IEnumerator Countdown()
+    IEnumerator Countdown(int counter)
     {
-        int counter = 3;
         countdown.SetText(counter.ToString());
 
         if (start)

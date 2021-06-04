@@ -325,7 +325,7 @@ public class DoQuestion : MonoBehaviour
         int count = Array.IndexOf(buttons,prev);
         bool answer = (count == (int)question["Correct"]);
 
-        Hashtable toSend = new Hashtable;
+        Hashtable toSend = new Hashtable();
 
         foreach (Button button in buttons)
         {
