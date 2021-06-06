@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using System.Linq;
 using System;
+using System.IO;
 
 
 /// <summary>
@@ -154,37 +155,41 @@ public class DoQuestion : MonoBehaviour
 
         string path = "Assets/Resources/Question_Source\\"+(string)tempData["ID"];
         string loc = "Question_Source\\" + (string)tempData["ID"];
+        var info = new DirectoryInfo(path);
+        List<string> questions = new List<string>();
 
-        foreach (string file in System.IO.Directory.GetFiles(path))
+        foreach (var file in info.GetFiles())
         {
-            if (!file.Contains(".meta"))
+            if (!file.Name.Contains(".meta"))
             {
-                if (file.Replace(path,"").Contains("C")){
-                    filename = file.Replace(path,loc).Replace(".png","");
-                    //rawData = System.IO.File.ReadAllBytes(filename);
-                    //tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
-                    tex = Resources.Load<Texture2D>(filename);
-                    choice4.Add(tex);
-                    print(filename+ " Is correct");
-                }
-                else if (file.Replace(path,"").Contains("Q"))
-                {
-                    filename = file.Replace(path, loc).Replace(".png", "");
-                    //rawData = System.IO.File.ReadAllBytes(filename);
-                    //tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
-                    tex = Resources.Load<Texture2D>(filename);
-                    tempData.Add("Question", tex);
-                    print(filename+ " Is Question");
-                }
-                else
-                {
-                    filename = file.Replace(path, loc).Replace(".png", "");
-                    //rawData = System.IO.File.ReadAllBytes(filename);
-                    //tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
-                    tex = Resources.Load<Texture2D>(filename);
-                    distractors.Add(tex);
-                    print(filename+ " Is Distractor");
-                }
+                questions.Add(file.Name);
+                print(file.Name);
+            }
+            
+        }
+
+        foreach (string file in questions)
+        {
+
+            if (file.Contains("C")){
+                filename = loc+"\\" + file.Replace(".png","");
+                tex = Resources.Load<Texture2D>(filename);
+                choice4.Add(tex);
+                print(filename+ " Is correct");
+            }
+            else if (file.Contains("Q"))
+            {
+                filename = loc + "\\" + file.Replace(".png", "");
+                tex = Resources.Load<Texture2D>(filename);
+                tempData.Add("Question", tex);
+                print(filename+ " Is Question");
+            }
+            else
+            {
+                filename = loc + "\\" + file.Replace(".png", "");
+                tex = Resources.Load<Texture2D>(filename);
+                distractors.Add(tex);
+                print(filename+ " Is Distractor");
             }
         }
         int temp;
