@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Proyecto26;
 using System;
+using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using Photon.Pun;
@@ -46,10 +47,11 @@ public class QuestionManager : MonoBehaviour
         ended = false;
 
         string path = "Assets/Resources/Question_Source";
+        var info = new DirectoryInfo(path);
 
-        foreach (string file in System.IO.Directory.GetFiles(path))
+        foreach (var file in info.GetDirectories())
         {
-            questions.Add(file.Replace("Assets/Resources/Question_Source\\", "").Replace(".meta",""));
+            questions.Add(file.Name);
         }
             
     }
