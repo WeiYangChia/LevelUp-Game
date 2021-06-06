@@ -153,8 +153,8 @@ public class DoQuestion : MonoBehaviour
         var rawData= Resources.Load<Texture2D>(filename);
         Texture2D tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
 
-        string path = "Assets/Resources/Question_Source\\"+(string)tempData["ID"];
-        string loc = "Question_Source\\" + (string)tempData["ID"];
+        string path = "Assets/Resources/Question_Source/"+(string)tempData["ID"];
+        string loc = "Question_Source/" + (string)tempData["ID"];
         var info = new DirectoryInfo(path);
         List<string> questions = new List<string>();
 
