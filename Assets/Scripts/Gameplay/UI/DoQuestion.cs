@@ -148,39 +148,40 @@ public class DoQuestion : MonoBehaviour
         tempData = QM.getRandomQuestion();
         List<Texture2D> distractors = new List<Texture2D>();
         List<Texture2D> choice4 = new List<Texture2D>();
-        string filename = "Assets/Resources/Question_Source\\Tr221\\Tr221Q.png";
-        var rawData= System.IO.File.ReadAllBytes(filename);
+        string filename = "Question_Source\\Tr221\\Tr221Q.png";
+        var rawData= Resources.Load<Texture2D>(filename);
         Texture2D tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
 
         string path = "Assets/Resources/Question_Source\\"+(string)tempData["ID"];
+        string loc = "Question_Source\\" + (string)tempData["ID"];
 
         foreach (string file in System.IO.Directory.GetFiles(path))
         {
             if (!file.Contains(".meta"))
             {
                 if (file.Replace(path,"").Contains("C")){
-                    filename = file;
-                    rawData = System.IO.File.ReadAllBytes(filename);
-                    tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
-                    tex.LoadImage(rawData);
+                    filename = file.Replace(path,loc).Replace(".png","");
+                    //rawData = System.IO.File.ReadAllBytes(filename);
+                    //tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
+                    tex = Resources.Load<Texture2D>(filename);
                     choice4.Add(tex);
                     print(filename+ " Is correct");
                 }
                 else if (file.Replace(path,"").Contains("Q"))
                 {
-                    filename = file;
-                    rawData = System.IO.File.ReadAllBytes(filename);
-                    tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
-                    tex.LoadImage(rawData);
+                    filename = file.Replace(path, loc).Replace(".png", "");
+                    //rawData = System.IO.File.ReadAllBytes(filename);
+                    //tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
+                    tex = Resources.Load<Texture2D>(filename);
                     tempData.Add("Question", tex);
                     print(filename+ " Is Question");
                 }
                 else
                 {
-                    filename = file;
-                    rawData = System.IO.File.ReadAllBytes(filename);
-                    tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
-                    tex.LoadImage(rawData);
+                    filename = file.Replace(path, loc).Replace(".png", "");
+                    //rawData = System.IO.File.ReadAllBytes(filename);
+                    //tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
+                    tex = Resources.Load<Texture2D>(filename);
                     distractors.Add(tex);
                     print(filename+ " Is Distractor");
                 }
