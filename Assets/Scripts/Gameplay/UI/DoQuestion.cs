@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System.Linq;
 using System;
 
+
 /// <summary>
 /// This script is used to determine the behavior of the Question UI for each player.
 /// After obtaining a random question from the Question Manager, it displays information in the respective UI elements.
@@ -18,6 +19,7 @@ public class DoQuestion : MonoBehaviour
     public TextMeshProUGUI description;
     Button[] buttons = new Button[4];
 
+    public RawImage QImage;
     public Button b1;
     public Button b2;
     public Button b3;
@@ -30,8 +32,10 @@ public class DoQuestion : MonoBehaviour
     public Image background;
     Color originalColor;
 
+    private Button prev;
+
     // Question Parameters:
-    private Question question;
+    private Hashtable question;
 
     
     public bool pointsAwardable;
@@ -53,8 +57,9 @@ public class DoQuestion : MonoBehaviour
     
     // Question Manager:
     public QuestionManager QM;
+    public mouseHeatMap HMap;
 
-    
+
     /// <summary>
     /// Start is callled at the very beginning, to intialize all required parameters and setup the first quesiton.
     /// </summary>
@@ -62,6 +67,7 @@ public class DoQuestion : MonoBehaviour
     {
         // Color Setup
         originalColor = background.color;
+        HMap = gameObject.GetComponent<mouseHeatMap>();
     }
 
     /// <summary>
@@ -99,53 +105,32 @@ public class DoQuestion : MonoBehaviour
     {
         // get new Question
         question = getQuestion();
-        bonusTimeLimit = question.bonusTimeLimit;
-        maxTime = question.maxTime;
+        bonusTimeLimit = (float)question["bonusTimeLimit"];
+        maxTime = (int)question["maxTime"];
 
         // set description and other question parameters
-        description.SetText(question.Description);
-        print(question.Description);
-        string answer = question.Correct;
+        description.SetText("Choose the best option of the 4!");
+        QImage.texture = (Texture2D)question["Question"];
+        int answer = (int)question["Correct"];
         print(answer);
-        int correctOption = Int32.Parse(answer);
+        int correctOption = answer;
 
         // set up Buttons with options
         buttons[0] = b1;
         buttons[1] = b2;
         buttons[2] = b3;
-        buttons[3] = b4;
+        buttons[3] = b4;   
 
         // set listeners of the buttons, to determine which corresponds to the wrong and right answers
-        for (int i = 0; i < 4; i++)
-        {
-            int index = i;
-            switch (i)
-            {
-                case 0:
-                    buttons[i].transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().SetText(question.Options.one);
-                    break;
-                case 1:
-                    buttons[i].transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().SetText(question.Options.two);
-                    break;
-                case 2:
-                    buttons[i].transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().SetText(question.Options.three);
-                    break;
-                case 3:
-                    buttons[i].transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().SetText(question.Options.four);
-                    break;
-            }
-            if (correctOption == (i+1))
-            {
-                // set correct option listener on button
-                buttons[i].onClick.AddListener(delegate { Correct(index); });
-            }
-            else
-            {
-                // set wrong option listerner on button
-                buttons[i].onClick.AddListener(delegate { Wrong(index); });
-            }   
-        }
 
+        int i = 0;
+        foreach (Button button in buttons)
+        {
+            button.onClick.AddListener(delegate { TaskOnClick(button); });
+            button.transform.GetChild(1).gameObject.GetComponent<RawImage>().texture = (Texture2D)question[i];
+            i++;
+        }
+        submit.onClick.AddListener(SubmitClick);
         // start question countdown
         inQuestion = true;
         print(inQuestion);
@@ -157,11 +142,80 @@ public class DoQuestion : MonoBehaviour
     /// </summary>
     /// <returns></returns>
 
-    private Question getQuestion()
+    private Hashtable getQuestion()
     {
+        Hashtable tempData = new Hashtable();
+        tempData = QM.getRandomQuestion();
+        List<Texture2D> distractors = new List<Texture2D>();
+        List<Texture2D> choice4 = new List<Texture2D>();
+        string filename = "Assets/Resources/Question_Source\\Tr221\\Tr221Q.png";
+        var rawData= System.IO.File.ReadAllBytes(filename);
+        Texture2D tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
+
+        string path = "Assets/Resources/Question_Source\\"+(string)tempData["ID"];
+
+        foreach (string file in System.IO.Directory.GetFiles(path))
+        {
+            if (!file.Contains(".meta"))
+            {
+                if (file.Replace(path,"").Contains("C")){
+                    filename = file;
+                    rawData = System.IO.File.ReadAllBytes(filename);
+                    tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
+                    tex.LoadImage(rawData);
+                    choice4.Add(tex);
+                    print(filename+ " Is correct");
+                }
+                else if (file.Replace(path,"").Contains("Q"))
+                {
+                    filename = file;
+                    rawData = System.IO.File.ReadAllBytes(filename);
+                    tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
+                    tex.LoadImage(rawData);
+                    tempData.Add("Question", tex);
+                    print(filename+ " Is Question");
+                }
+                else
+                {
+                    filename = file;
+                    rawData = System.IO.File.ReadAllBytes(filename);
+                    tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
+                    tex.LoadImage(rawData);
+                    distractors.Add(tex);
+                    print(filename+ " Is Distractor");
+                }
+            }
+        }
+        int temp;
+        Texture2D tempTex;
+        for (int i = 0; i < 3; i++)
+        {
+            temp = UnityEngine.Random.Range(0, distractors.Count);
+            tempTex = distractors[temp];
+            distractors.Remove(tempTex);
+            choice4.Add(tempTex);
+        }
+        List<int> numbers = new List<int>();
+        for (int i = 0; i < 4; i++)
+        {
+            numbers.Add(i);
+        }
+        for (int i = 0; i < 4; i++)
+        {
+            temp = UnityEngine.Random.Range(0, numbers.Count);
+            print(numbers[temp]);
+            if (numbers[temp] == 0)
+            {
+                tempData.Add("Correct", i);
+                print(i.ToString() + "is correct");
+            }
+            tempData.Add(i, choice4[numbers[temp]]);
+            numbers.Remove(temp);
+        }
+
         if (QM != null)
         {
-            return QM.getRandomQuestion();
+            return tempData;
         }
         else
         {
@@ -186,7 +240,7 @@ public class DoQuestion : MonoBehaviour
         curTime = 0;
         counterUI.text = "Time Elapsed: 0";
 
-        while (curTime < (maxTime + 1)){
+        while (curTime < (maxTime + 1)&& inQuestion) {
             yield return new WaitForSeconds(1);
 
             curTime += 1;
@@ -241,7 +295,6 @@ public class DoQuestion : MonoBehaviour
             buttons[i].onClick.RemoveAllListeners();
         }
     }
-
     /// <summary>
     /// This function is called when the correct button is clicked.
     /// It records the player's response and awards points accordingly
@@ -249,65 +302,74 @@ public class DoQuestion : MonoBehaviour
     /// Finally, it deactivates the question UI
     /// </summary>
     /// <param name="index"></param>
-
-    void Correct(int index)
+    void TaskOnClick(Button buttonSel)
     {
-        QM.recordResponse(question.ID, index);
+        if (buttons.Contains(buttonSel))
+        {
+            foreach (Button button in buttons)
+            {
+                if (button == buttonSel)
+                {
+                    button.gameObject.SetActive(true);
+                    button.Select();
+                    prev = button;
+                }
+            }
+        }
+    }
+
+    void SubmitClick()
+    {
+        prev.gameObject.SetActive(true);
+        prev.Select();
+        int count = Array.IndexOf(buttons,prev);
+        bool answer = (count == (int)question["Correct"]);
+
+        Hashtable toSend = new Hashtable();
+
+        foreach (Button button in buttons)
+        {
+        }
+
+        QM.recordResponse((string)question["ID"], count);
         resetButtons();
 
         if (pointsAwardable)
         {
-            int points = normalPoints;
+            int points = normalPoints* Convert.ToInt32(answer);
 
-            if (bonusAwardable){
-                points += bonusPoints;
+            if (bonusAwardable)
+            {
+                if (answer)
+                {
+                    points += bonusPoints;
+                    print("Corect");
+                }else
+                {
+                    points -= bonusPoints;
+                    print("Wrong");
+                }
+                
             }
-
             player.GetComponent<PlayerController>().ChangePoints(points);
         }
+        List<List<int>> test = new List<List<int>>();
+        test=HMap.getMaps();
 
         answered = true;
-        correct = true;
+        correct = answer;
         inQuestion = false;
-
-        StartCoroutine("Disappear");
-
-        print("Correct");
-    }
-
-    /// <summary>
-    /// This function is called when the wrong button is clicked.
-    /// It records the player's response and deducts points accordingly
-    /// It also updates the answered and correct parameters, which determines the behavior of the block (drop immediately)
-    /// Finally, it allows the question UI to transition to the respawn UI.
-    /// </summary>
-    /// <param name="index"></param>
-
-    void Wrong(int index)
-    {
-        QM.recordResponse(question.ID, index);
-        resetButtons();
-
-       
-        if (pointsAwardable)
+        if (answer)
         {
-            int points = 0;
-
-            if (bonusAwardable){
-                points -= bonusPoints;
-            }
-
-            player.GetComponent<PlayerController>().ChangePoints(points);
+            StartCoroutine("Disappear");
         }
-
-        answered = true;
-        correct = false;
-        inQuestion = false;
-
-        StartCoroutine("FailBGChange");
-
-        print("Wrong");
+        else
+        {
+            StartCoroutine("FailBGChange");
+        }
+        
     }
+
 
     /// <summary>
     /// This function is called when the countdown expires without a player response
@@ -318,7 +380,7 @@ public class DoQuestion : MonoBehaviour
 
     void Unanswered()
     {
-        QM.recordResponse(question.ID, -1);
+        QM.recordResponse((string)question["ID"], -1);
         resetButtons();
 
         answered = false;
