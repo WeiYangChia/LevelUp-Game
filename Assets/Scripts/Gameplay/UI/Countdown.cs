@@ -12,7 +12,7 @@ public class Countdown : MonoBehaviour
 {
     // Parameters for the timer
     float currentTime = 0f;
-    float startingTime = 90.49999f;
+    float startingTime = 5.49999f; //90.49999f
     float totalTime;
     double minutes;
     string min;
@@ -47,7 +47,7 @@ public class Countdown : MonoBehaviour
     private void Update()
     {
         if (!started){
-            StartCoroutine(Delay());
+            StartCoroutine(Delay(5));
         }
 
         if (Question == null){
@@ -102,9 +102,9 @@ public class Countdown : MonoBehaviour
     /// <summary>
     /// Delays this instance.
     /// </summary>
-    IEnumerator Delay()
+    IEnumerator Delay(int time)
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(time);
         started = true;
     }
 

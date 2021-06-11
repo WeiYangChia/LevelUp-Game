@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using Photon.Pun;
+using UnityEngine.Networking;
 
 /// <summary>
 /// The QuestionManager script is used to fetch the question bank from the database based on the category and difficulty selected.
@@ -22,13 +23,20 @@ public class QuestionManager : MonoBehaviour
     // Question parameters
     public int Category;
     public int Difficulty;
+    public int questionNumber;
+    public Dictionary<string, object> question;
 
     // Game status
     bool ended;
+    bool newQ = true;
 
     // Responses and Questions:
     public Dictionary<string, int> responses = new Dictionary<string, int>();
     public List<string> questions = new List<string>();
+    public List<string> choices = new List<string>();
+    public List<MatrixReasoningQ> MRQ = new List<MatrixReasoningQ>();
+    public Dictionary<string, object> MRQRecord = new Dictionary<string, object>();
+    public Dictionary<string, object> chosen = new Dictionary<string, object>();
 
     //Phton View
     private PhotonView PV;
@@ -37,6 +45,9 @@ public class QuestionManager : MonoBehaviour
     /// The start function is called before the first frame,
     /// and it initializes the question bank by fetching it from the appropriate URL.
     /// </summary>
+    /// 
+
+
     void Start()
     {
         // Initialize settings:
@@ -46,23 +57,70 @@ public class QuestionManager : MonoBehaviour
         Difficulty = 1;
         ended = false;
 
-        string path = "Assets/Resources/Question_Source";
-        var info = new DirectoryInfo(path);
-
-        foreach (var file in info.GetDirectories())
+        RestClient.Get(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/QuestionList/Matrix Reasoning.json").Then(onResolved: response =>
         {
-            questions.Add(file.Name);
-        }
-            
+            print("Loaded");
+            print(response.Text);
+            questions = JsonConvert.DeserializeObject<List<string>>(response.Text);
+            print("JSON Loaded");
+            randomQuestions();
+        });
     }
+
+    void Update()
+    {
+        if (newQ && (MRQ.Count > 14))
+        {
+            print("get Question");
+            question = getRandomQuestion();
+            newQ = false;
+        }
+    }
+
+    public void randomQuestions()
+    {
+        
+        int choice;
+        questionNumber = 0;
+        while (choices.Count< 15)
+        {
+            choice = UnityEngine.Random.Range(0, questions.Count - 1);
+            if (!choices.Contains(questions[choice]))
+            {
+                print(questions[choice]);
+                RestClient.Get(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Question/Matrix Reasoning/" + questions[choice]+".json").Then(onResolved: response =>
+                {
+                    MatrixReasoningQ temp = JsonConvert.DeserializeObject<MatrixReasoningQ>(response.Text);
+                    MRQ.Add(temp);
+                });
+                choices.Add(questions[choice]);
+            }
+        }
+
+    }
+
 
     /// <summary>
     /// This function is called by each player to obtain a random question from the question bank that he has not attempted before
     /// </summary>
     /// <returns></returns>
-
-    public Hashtable getRandomQuestion()
+    /// 
+    public Dictionary<string, object> getGenQuestion()
     {
+        
+        return question;
+    }
+
+    public Dictionary<string, object> getRandomQuestion()
+    {
+        string url = "https://drive.google.com/uc?export=download&id=";
+        List<string> tempLoc = new List<string>();
+        List<string> tempOpt = new List<string>();
+        List<string> finalLoc = new List<string>();
+        List<string> finalOpt = new List<string>();
+        chosen = new Dictionary<string, object>();
+
+
         // Unlikely scenario: Player has answered all questions in the question bank
         if (responses.Count == questions.Count)
         {
@@ -70,20 +128,94 @@ public class QuestionManager : MonoBehaviour
         }
 
         // Randomize and return appropriate question
-        string tempQid = "";
-        int temp = -1;
+        
+        int temp = questionNumber;
+        MatrixReasoningQ tempMRQ = MRQ[temp];
+        print(tempMRQ.ID);
 
-        while (tempQid == "" || responses.ContainsKey(tempQid)) {
-            temp = UnityEngine.Random.Range(0, questions.Count);
-            tempQid = questions[temp];
-            print(questions[temp]);
-        }
+        tempLoc.Add(url + tempMRQ.Correct.Loc);
+        tempLoc.Add(url + tempMRQ.diff1.Distractor1.Loc);
+        tempLoc.Add(url + tempMRQ.diff1.Distractor2.Loc);
+        tempLoc.Add(url + tempMRQ.diff1.Distractor3.Loc);
 
-        Hashtable chosen = new Hashtable();
-        chosen.Add("ID",questions[temp]);
+        tempOpt.Add(tempMRQ.Correct.Name);
+        tempOpt.Add(tempMRQ.diff1.Distractor1.Name);
+        tempOpt.Add(tempMRQ.diff1.Distractor2.Name);
+        tempOpt.Add(tempMRQ.diff1.Distractor3.Name);
+
+        
+        chosen.Add("ID", tempMRQ.ID);
         chosen.Add("bonusTimeLimit"  ,getBonusTimeLimit());
         chosen.Add("maxTime", getMaxTime());
+        chosen.Add("questionloc", url + tempMRQ.Question.Loc);
+        chosen.Add("options", tempLoc);
+
+        StartCoroutine(DownloadQImage((string)chosen["questionloc"], chosen));
+
+        int tempNum;
+        List<int> numbers = new List<int>();
+        for (int i = 0; i < 4; i++)
+        {
+            numbers.Add(i);
+        }
+        for (int i = 0; i < 4; i++)
+        {
+            tempNum = UnityEngine.Random.Range(0, numbers.Count);
+            print(numbers[tempNum]);
+            if (numbers[tempNum] == 0)
+            {
+                chosen.Add("Correct", i);
+            }
+            StartCoroutine(DownloadOptionImage(tempLoc[numbers[tempNum]], i, chosen));
+            finalLoc.Add(tempLoc[numbers[tempNum]]);
+            finalOpt.Add(tempOpt[numbers[tempNum]]);
+            numbers.Remove(numbers[tempNum]);
+        }
+        if (questionNumber >= 15)
+        {
+            randomQuestions();
+        }
+        chosen.Add("OptionLoc", finalLoc);
+        chosen.Add("OptionPlacement", finalOpt);
+        questionNumber++;
+        print(JsonConvert.SerializeObject(chosen));
         return chosen;
+    }
+
+    IEnumerator DownloadOptionImage(string MediaUrl, int i, Dictionary<string, object> tempData)
+    {
+        
+        UnityWebRequest request = UnityWebRequestTexture.GetTexture(MediaUrl);
+        yield return request.SendWebRequest();
+        if (request.isNetworkError || request.isHttpError)
+        {
+            Debug.Log(request.error);
+            print(MediaUrl);
+        }
+
+        else
+        {
+            tempData.Add(i.ToString(), ((DownloadHandlerTexture)request.downloadHandler).texture);
+            print("Image loaded for" + i.ToString());
+        }
+    }
+
+    IEnumerator DownloadQImage(string MediaUrl, Dictionary<string, object> tempData)
+    {
+        
+        UnityWebRequest request = UnityWebRequestTexture.GetTexture(MediaUrl);
+        yield return request.SendWebRequest();
+        if (request.isNetworkError || request.isHttpError)
+        {
+            Debug.Log(request.error);
+            print(MediaUrl);
+        }
+
+        else
+        {
+            tempData["question"] = ((DownloadHandlerTexture)request.downloadHandler).texture;
+            print("question loaded");
+        }
     }
 
 
@@ -93,9 +225,24 @@ public class QuestionManager : MonoBehaviour
     /// <param name="questionNum"></param>
     /// <param name="resp"></param>
 
-    public void recordResponse(string questionNum, int resp)
+    public void recordResponse(Dictionary<string, object> questionInfo, int resp, List<List<int>>mouseheatmap, bool answer, float curTime=0f)
     {
-        responses.Add(questionNum, resp);
+        newQ = true;
+        responses.Add((string)questionInfo["ID"], resp);
+        Dictionary<string, object> qToSend = new Dictionary<string, object>();
+        qToSend.Add("ID", (string)questionInfo["ID"]);
+        qToSend.Add("question", (string)questionInfo["questionloc"]);
+        qToSend.Add("OptionLoc", (List<string>)questionInfo["OptionLoc"]);
+        qToSend.Add("OptionPlacement", (List<string>)questionInfo["OptionPlacement"]);
+        qToSend.Add("mouseMovement", (List<List<int>>)mouseheatmap);
+        qToSend.Add("answer", (bool)answer);
+        qToSend.Add("TimeTaken", (float)curTime);
+
+        print("Question Number:" + questionNumber);
+
+        MRQRecord.Add(questionNumber.ToString(), qToSend);
+        print(JsonConvert.SerializeObject(MRQRecord));
+
     }
 
     /// <summary>
@@ -105,6 +252,11 @@ public class QuestionManager : MonoBehaviour
     public Dictionary<string, int> getResponses()
     {
         return responses;
+    }
+
+    public Dictionary<string, object> getMRQ()
+    {
+        return MRQRecord;
     }
 
     /// <summary>

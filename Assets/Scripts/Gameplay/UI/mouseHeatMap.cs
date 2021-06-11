@@ -46,7 +46,7 @@ public class mouseHeatMap : MonoBehaviour
         {
             foreach (List<float> item in positions)
             {
-                if (item[0]<800 && item[1] < 400)
+                if (0<item[0]&& item[0] < 800 && 0<item[1]&& item[1] < 400)
                 {
                     mapping[(int)item[0]][(int)item[1]] += 1;
                 }

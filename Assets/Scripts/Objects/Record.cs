@@ -46,6 +46,11 @@ public class Record
         private set;
     }
 
+    public Dictionary<string, object> MRQ
+    {
+        get;
+        private set;
+    }
 
     // Start is called before the first frame update
     public Record(string datetime, int diff, int cat, string playerName, int points, int rank)
@@ -59,8 +64,9 @@ public class Record
         this.Rank = rank;
     }
 
-    public void attachResponses(Dictionary<string, int> resp)
+    public void attachResponses(Dictionary<string, int> resp, Dictionary<string, object> MRQRecord)
     {
         this.Responses = resp;
+        this.MRQ = MRQRecord;
     }
 }
