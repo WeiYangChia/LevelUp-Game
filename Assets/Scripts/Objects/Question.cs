@@ -1,72 +1,71 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
+using System.Linq;
+using System;
+using System.IO;
+
+
+// Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
 
 [Serializable]
-
-public class Option
+public class qImage
 {
-    public string one;
-    public string two;
-    public string three;
-    public string four;
+    public string Loc { get; set; }
+    public string Name { get; set; }
 
-    public Option(string first, string second, string third, string fourth)
+    public qImage(string Loc, string Name)
     {
-        this.one = first;
-        this.two = second;
-        this.three = third;
-        this.four = fourth;
+        this.Loc = Loc;
+        this.Name = Name;
     }
 }
-public class Question
+
+
+[Serializable]
+public class difficulty
 {
+    public qImage Distractor1 { get; set; }
+    public qImage Distractor2 { get; set; }
+    public qImage Distractor3 { get; set; }
 
-    public int ID;
-    public int Difficulty;
-    public int Category;
-    public string Description;
-    public Option Options;
-    public string Correct;
-    public float bonusTimeLimit;
-    public int maxTime;
-
-    //public int id
-    //{
-    //    get;
-    //    private set;
-    //}
-    //public int difficulty
-    //{
-    //    get;
-    //    private set;
-    //}
-    //public int category
-    //{
-    //    get;
-    //    private set;
-    //}
-
-    //public string description
-    //{
-    //    get;
-    //    private set;
-    //}
-
-    //public Dictionary<string, bool> options
-    //{
-    //    get;
-    //    private set;
-    //}
-
-    public Question(int id, int diff, int cat, string desc, Option opt, string corr)
+    public difficulty(qImage Distractor1, qImage Distractor2, qImage Distractor3)
     {
-        this.ID = id;
-        this.Difficulty = diff;
-        this.Category = cat;
-        this.Description = desc;
-        this.Options = opt;
-        this.Correct = corr;
+        this.Distractor1 = Distractor1;
+        this.Distractor2 = Distractor2;
+        this.Distractor3 = Distractor3;
     }
 }
+
+[Serializable]
+public class MatrixReasoningQ
+{
+    public qImage Correct { get; set; }
+    public string ID { get; set; }
+    public qImage Question { get; set; }
+    public difficulty diff1 { get; set; }
+
+    public MatrixReasoningQ(qImage Correct, string ID, qImage Question, difficulty diff1)
+    {
+        this.Correct = Correct;
+        this.ID = ID;
+        this.Question = Question;
+        this.diff1 = diff1;
+    }
+}
+
+
+// Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
+[Serializable]
+public class MatrixReasoning
+{
+    public List<string> questions { get; set; }
+
+    public MatrixReasoning(List<string> questions)
+    {
+        this.questions = questions;
+    }
+}
+

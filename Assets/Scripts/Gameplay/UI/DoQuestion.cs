@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 using System.Linq;
 using System;
 using System.IO;
@@ -36,7 +37,7 @@ public class DoQuestion : MonoBehaviour
     private Button prev;
 
     // Question Parameters:
-    private Hashtable question;
+    private Dictionary<string, object> question;
 
     
     public bool pointsAwardable;
@@ -69,6 +70,7 @@ public class DoQuestion : MonoBehaviour
         // Color Setup
         originalColor = background.color;
         HMap = gameObject.GetComponent<mouseHeatMap>();
+        
     }
 
     /// <summary>
@@ -108,11 +110,14 @@ public class DoQuestion : MonoBehaviour
         question = getQuestion();
         bonusTimeLimit = (float)question["bonusTimeLimit"];
         maxTime = (int)question["maxTime"];
+        int answer;
 
         // set description and other question parameters
         description.SetText("Choose the best option of the 4!");
-        QImage.texture = (Texture2D)question["Question"];
-        int answer = (int)question["Correct"];
+        //StartCoroutine(DownloadImage((string)question["question"], QImage));
+        QImage.texture = (Texture2D)question["question"];
+        if ((int)question["Correct"] == null) { answer = 0; }
+        else { answer = (int)question["Correct"]; }
         print(answer);
         int correctOption = answer;
 
@@ -120,7 +125,7 @@ public class DoQuestion : MonoBehaviour
         buttons[0] = b1;
         buttons[1] = b2;
         buttons[2] = b3;
-        buttons[3] = b4;   
+        buttons[3] = b4;
 
         // set listeners of the buttons, to determine which corresponds to the wrong and right answers
 
@@ -128,7 +133,7 @@ public class DoQuestion : MonoBehaviour
         foreach (Button button in buttons)
         {
             button.onClick.AddListener(delegate { TaskOnClick(button); });
-            button.transform.GetChild(1).gameObject.GetComponent<RawImage>().texture = (Texture2D)question[i];
+            button.transform.GetChild(1).gameObject.GetComponent<RawImage>().texture = (Texture2D)question[i.ToString()];
             i++;
         }
         submit.onClick.AddListener(SubmitClick);
@@ -143,81 +148,13 @@ public class DoQuestion : MonoBehaviour
     /// </summary>
     /// <returns></returns>
 
-    private Hashtable getQuestion()
+    
+
+    private Dictionary<string, object> getQuestion()
     {
-        Hashtable tempData = new Hashtable();
-        tempData = QM.getRandomQuestion();
-        List<Texture2D> distractors = new List<Texture2D>();
-        List<Texture2D> choice4 = new List<Texture2D>();
-        string filename = "Question_Source\\Tr221\\Tr221Q.png";
-        var rawData= Resources.Load<Texture2D>(filename);
-        Texture2D tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
-
-        string path = "Assets/Resources/Question_Source/"+(string)tempData["ID"];
-        string loc = "Question_Source/" + (string)tempData["ID"];
-        var info = new DirectoryInfo(path);
-        List<string> questions = new List<string>();
-
-        foreach (var file in info.GetFiles())
-        {
-            if (!file.Name.Contains(".meta"))
-            {
-                questions.Add(file.Name);
-                print(file.Name);
-            }
-            
-        }
-
-        foreach (string file in questions)
-        {
-
-            if (file.Contains("C")){
-                filename = loc+"\\" + file.Replace(".png","");
-                tex = Resources.Load<Texture2D>(filename);
-                choice4.Add(tex);
-                print(filename+ " Is correct");
-            }
-            else if (file.Contains("Q"))
-            {
-                filename = loc + "\\" + file.Replace(".png", "");
-                tex = Resources.Load<Texture2D>(filename);
-                tempData.Add("Question", tex);
-                print(filename+ " Is Question");
-            }
-            else
-            {
-                filename = loc + "\\" + file.Replace(".png", "");
-                tex = Resources.Load<Texture2D>(filename);
-                distractors.Add(tex);
-                print(filename+ " Is Distractor");
-            }
-        }
-        int temp;
-        Texture2D tempTex;
-        for (int i = 0; i < 3; i++)
-        {
-            temp = UnityEngine.Random.Range(0, distractors.Count);
-            tempTex = distractors[temp];
-            distractors.Remove(tempTex);
-            choice4.Add(tempTex);
-        }
-        List<int> numbers = new List<int>();
-        for (int i = 0; i < 4; i++)
-        {
-            numbers.Add(i);
-        }
-        for (int i = 0; i < 4; i++)
-        {
-            temp = UnityEngine.Random.Range(0, numbers.Count);
-            print(numbers[temp]);
-            if (numbers[temp] == 0)
-            {
-                tempData.Add("Correct", i);
-                print(i.ToString() + "is correct");
-            }
-            tempData.Add(i, choice4[numbers[temp]]);
-            numbers.Remove(temp);
-        }
+        Dictionary<string, object> tempData = new Dictionary<string, object>();
+        tempData = QM.getGenQuestion();
+        
 
         if (QM != null)
         {
@@ -331,13 +268,10 @@ public class DoQuestion : MonoBehaviour
         int count = Array.IndexOf(buttons,prev);
         bool answer = (count == (int)question["Correct"]);
 
-        Hashtable toSend = new Hashtable();
+        Dictionary<string, object> toSend = new Dictionary<string, object>();
+        string test = HMap.getMaps();
 
-        foreach (Button button in buttons)
-        {
-        }
-
-        QM.recordResponse((string)question["ID"], count);
+        QM.recordResponse(question, count,test, answer, curTime);
         resetButtons();
 
         if (pointsAwardable)
@@ -359,12 +293,12 @@ public class DoQuestion : MonoBehaviour
             }
             player.GetComponent<PlayerController>().ChangePoints(points);
         }
-        List<List<int>> test = new List<List<int>>();
-        test=HMap.getMaps();
+        
 
         answered = true;
         correct = answer;
         inQuestion = false;
+        prev = null;
         if (answer)
         {
             StartCoroutine("Disappear");
@@ -386,7 +320,8 @@ public class DoQuestion : MonoBehaviour
 
     void Unanswered()
     {
-        QM.recordResponse((string)question["ID"], -1);
+        string test = "";
+        QM.recordResponse(question, -1, test, false);
         resetButtons();
 
         answered = false;

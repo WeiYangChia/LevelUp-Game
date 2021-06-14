@@ -11,8 +11,8 @@ using Newtonsoft.Json;
 public class Login : MonoBehaviour
 {
 
-    private string AuthKey = "AIzaSyBHzLV-p9Uw1iMVKdjPgg-50LoqtxOwvoM";
-    private string databaseURL = "https://quizguyz.firebaseio.com/Users/";
+    private string AuthKey = "AIzaSyBgIVV4AMZcjJ3PCR1qt4nAz8PmvBOcwfc";
+    private string databaseURL = "https://test-ebe23.firebaseio.com/Users/";
     public static string localid;
     public string idToken;
     public string username = null;
@@ -33,7 +33,7 @@ public class Login : MonoBehaviour
 
     private void Start()
     {
-
+        
     }
     private void Update()
     {
@@ -50,6 +50,7 @@ public class Login : MonoBehaviour
     // Apparently you need to have password length > 6 and cannot sign up with same email otherwise error
     public void SignUpUser(string email, string name, string password)
     {
+        print(name);
         string userData = "{\"email\":\""+ email +"\", \"password\":\""+password+"\"}";
         RestClient.Post(url: "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=" + AuthKey, userData).Then(onResolved: response =>
          {
@@ -98,7 +99,7 @@ public class Login : MonoBehaviour
     private void PostToDatabase()
     {
         User user = new User(username, localid);
-        RestClient.Put(url: "https://quizguyz.firebaseio.com/Users/"  + localid + ".json", user).Then(onResolved:response => {
+        RestClient.Put(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Users/" + localid + ".json", user).Then(onResolved:response => {
             currentUser = user;
             loadScene();
         }).Catch(error => {
@@ -123,7 +124,7 @@ public class Login : MonoBehaviour
 
     public void getUsername(string userid)
     { 
-        RestClient.Get(url: "https://quizguyz.firebaseio.com/Users/" + userid + ".json").Then(onResolved: response =>
+        RestClient.Get(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Users/" + userid + ".json").Then(onResolved: response =>
         {
             User user = JsonConvert.DeserializeObject<User>(response.Text);
             username = user.username;

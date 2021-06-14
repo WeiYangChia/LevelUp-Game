@@ -93,7 +93,7 @@ public class PlayerController : MonoBehaviour
         respawnPoint = transform.position;
         respawnThreshold = respawnPoint.y - 3;
 
-        StartCoroutine("Countdown",3);
+        StartCoroutine("Countdown",5);
     }
 
     void curPlayerSetup(string tag, int color, string name)
