@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class TutorialPlatform : MonoBehaviour
 {
     // Collection of Blocks
+    public ActivePlatform AP;
     public GameObject block1;
     public GameObject block2;
     public GameObject tutorialInstructionParent;
@@ -87,8 +88,6 @@ public class TutorialPlatform : MonoBehaviour
         print("Hi "+PC.playerName+", welcome to the tutorial! Here, we will teach you the basics of the game! Click Continue");
         
         // tutorialInstruction
-
-        inStage = false;
     }
 
     void step2(){
@@ -114,6 +113,8 @@ public class TutorialPlatform : MonoBehaviour
         inStage = true;
         stage = 3;
 
+        TBscript.startDropBlock();
+
         GameObject block = block2;
 
         // Activate Block based on blockIndex
@@ -133,16 +134,18 @@ public class TutorialPlatform : MonoBehaviour
         inStage = true;
         stage = 4;
 
+        TBscript.startDropBlock();
+
         giveInstruction(4);
         print("Great job! Now that you've got the hang of the game, we'll let you continue practicing! Click EXIT at the top left hand corner to finish the tutorial. Have fun!");
     }
 
     void tutorialOver(){
-
+        AP.GetComponent<ActivePlatform>().enabled = true;
     }
 
     public void finishStage(){
-        inStage = false;
+        giveInstruction(stage);
     }
 
     private void giveInstruction(int stage){
@@ -159,5 +162,6 @@ public class TutorialPlatform : MonoBehaviour
         
         inDialogue = false;
         PC.moveable = true;
+        inStage = false;
     }
 }
