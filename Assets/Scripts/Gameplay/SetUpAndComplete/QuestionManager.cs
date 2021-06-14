@@ -19,6 +19,7 @@ public class QuestionManager : MonoBehaviour
 {
     // Singleton
     public static QuestionManager QM;
+    public Loading_Screen LS;
 
     // Question parameters
     public int Category;
@@ -40,6 +41,7 @@ public class QuestionManager : MonoBehaviour
 
     //Phton View
     private PhotonView PV;
+    
 
     /// <summary>
     /// The start function is called before the first frame,
@@ -50,6 +52,8 @@ public class QuestionManager : MonoBehaviour
 
     void Start()
     {
+        LS = LS.GetComponent<Loading_Screen>();
+        LS.percentageValues(16);
         // Initialize settings:
         // Category = MapController.Category;
         // Difficulty = MapController.Difficulty;
@@ -63,6 +67,7 @@ public class QuestionManager : MonoBehaviour
             print(response.Text);
             questions = JsonConvert.DeserializeObject<List<string>>(response.Text);
             print("JSON Loaded");
+            LS.moveSlider();
             randomQuestions();
         });
     }
@@ -92,6 +97,7 @@ public class QuestionManager : MonoBehaviour
                 {
                     MatrixReasoningQ temp = JsonConvert.DeserializeObject<MatrixReasoningQ>(response.Text);
                     MRQ.Add(temp);
+                    LS.moveSlider();
                 });
                 choices.Add(questions[choice]);
             }
@@ -225,7 +231,7 @@ public class QuestionManager : MonoBehaviour
     /// <param name="questionNum"></param>
     /// <param name="resp"></param>
 
-    public void recordResponse(Dictionary<string, object> questionInfo, int resp, List<List<int>>mouseheatmap, bool answer, float curTime=0f)
+    public void recordResponse(Dictionary<string, object> questionInfo, int resp, string mouseheatmap, bool answer, float curTime=0f)
     {
         newQ = true;
         responses.Add((string)questionInfo["ID"], resp);
@@ -234,7 +240,7 @@ public class QuestionManager : MonoBehaviour
         qToSend.Add("question", (string)questionInfo["questionloc"]);
         qToSend.Add("OptionLoc", (List<string>)questionInfo["OptionLoc"]);
         qToSend.Add("OptionPlacement", (List<string>)questionInfo["OptionPlacement"]);
-        qToSend.Add("mouseMovement", (List<List<int>>)mouseheatmap);
+        qToSend.Add("mouseMovement", (string)mouseheatmap);
         qToSend.Add("answer", (bool)answer);
         qToSend.Add("TimeTaken", (float)curTime);
 

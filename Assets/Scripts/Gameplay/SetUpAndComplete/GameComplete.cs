@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
 using System.Collections;
+using System.Linq;
 
 /// <summary>
 /// This script is used to determine the required processing when the game ends.
@@ -26,6 +27,8 @@ public class GameComplete : MonoBehaviour
     // Information regarding all players
     private List<PlayerController> players = new List<PlayerController>();
     private List<Record> records = new List<Record>();
+    public Dictionary<string, int> Highscores = new Dictionary<string,int>();
+    Record cur;
 
     // Question Manager for responses
     private QuestionManager QM;
@@ -83,7 +86,7 @@ public class GameComplete : MonoBehaviour
         if (rankProcessed && !highscoreDisplayUpdated)
         {
             // Display Ranking UI
-            //displayResults();
+            displayResults();
         }
     }
 
@@ -158,7 +161,7 @@ public class GameComplete : MonoBehaviour
             }
 
             // Create record for players storing all game related information
-            Record cur = new Record(dateTime,
+            cur = new Record(dateTime,
                 QM.Difficulty, QM.Category,
                 rankedPlayers[i].GetComponent<PlayerController>().playerName,
                 rankedPlayers[i].GetComponent<PlayerController>().getPoints(),
@@ -282,10 +285,25 @@ public class GameComplete : MonoBehaviour
 
     void displayResults()
     {
+        string urlRecord = "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Highscore.json";
         highscoreDisplayUpdated = true;
-        ResultsPage.GetComponent<HighscoreTable>().enabled = true;
-        ResultsPage.GetComponent<HighscoreTable>().endGameUpdateTable(records);
-        ResultsPage.SetActive(true);
+        RestClient.Get(url: urlRecord).Then(onResolved: response =>
+        {
+            print(response.Text);
+            Dictionary<string, int> Highscores = JsonConvert.DeserializeObject<Dictionary<string, int>>(response.Text);
+            Highscores["uiyot"] = cur.Points;
+            Dictionary<string, int> toSend = Highscores.OrderByDescending(pair => pair.Value).Take(10)
+               .ToDictionary(pair => pair.Key, pair => pair.Value);
+            RestClient.Put(url: urlRecord, JsonConvert.SerializeObject(toSend));
+            ResultsPage.GetComponent<HighscoreTable>().enabled = true;
+            ResultsPage.GetComponent<HighscoreTable>().endGameUpdateTable(Highscores);
+            ResultsPage.SetActive(true);
+            
+        }).Catch(error =>
+        {
+            print("Failed");
+        });
+
     }
 
     IEnumerator Delay(int time)

@@ -269,8 +269,7 @@ public class DoQuestion : MonoBehaviour
         bool answer = (count == (int)question["Correct"]);
 
         Dictionary<string, object> toSend = new Dictionary<string, object>();
-        List<List<int>> test = new List<List<int>>();
-        test = HMap.getMaps();
+        string test = HMap.getMaps();
 
         QM.recordResponse(question, count,test, answer, curTime);
         resetButtons();
@@ -321,7 +320,7 @@ public class DoQuestion : MonoBehaviour
 
     void Unanswered()
     {
-        List<List<int>> test = new List<List<int>>();
+        string test = "";
         QM.recordResponse(question, -1, test, false);
         resetButtons();
 

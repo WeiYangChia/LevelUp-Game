@@ -21,19 +21,21 @@ public class HighscoreTable : MonoBehaviour
     /// Updates the table at the end of the game.
     /// </summary>
     /// <param name="records">The records.</param>
-    public void endGameUpdateTable(List<Record> records)
+    public void endGameUpdateTable(Dictionary<string, int> records)
     {
-        for (int i = 0; i < records.Count; i++)
+        int count = 1;
+        foreach (KeyValuePair<string, int> kv in records) // loop through both
         {
             Transform entryTransform = Instantiate(entryTemplate, entryContainer);
             RectTransform entryRectTransform = entryTransform.GetComponent<RectTransform>();
-            entryRectTransform.anchoredPosition = new Vector3(-53, 10-(templateHeight * i), 0);
+            entryRectTransform.anchoredPosition = new Vector3(-53, 10 - (templateHeight * (count-1)), 0);
             entryTransform.gameObject.SetActive(true);
 
-            entryTransform.Find("Rank").GetComponent<TextMeshProUGUI>().text = records[i].Rank.ToString();
-            entryTransform.Find("Name").GetComponent<TextMeshProUGUI>().text = records[i].playerName;
-            entryTransform.Find("Points").GetComponent<TextMeshProUGUI>().text = records[i].Points.ToString();
+            entryTransform.Find("Rank").GetComponent<TextMeshProUGUI>().text = count.ToString();
+            entryTransform.Find("Name").GetComponent<TextMeshProUGUI>().text = kv.Key.ToString();
+            entryTransform.Find("Points").GetComponent<TextMeshProUGUI>().text = kv.Value.ToString();
         }
+
     }
 
     /// <summary>

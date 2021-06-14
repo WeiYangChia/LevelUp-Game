@@ -40,8 +40,9 @@ public class mouseHeatMap : MonoBehaviour
         }
     }
 
-    public List<List<int>> getMaps()
+    public string getMaps()
     {
+        string toSend = "";
         if (positions.Count > 0)
         {
             foreach (List<float> item in positions)
@@ -52,10 +53,20 @@ public class mouseHeatMap : MonoBehaviour
                 }
                 
             }
+
+            //foreach (List<int> values in mapping)
+            //{
+            //    foreach (float value in values)
+            //    {
+            //        toSend += value.ToString();
+            //    }
+            //    toSend += ".";
+
+            //}
             newMaps();
-            return mapping;
+            return toSend;
         }
-        return mapping;
+        return toSend;
     }
 
     public void Display(List<List<int>> list)

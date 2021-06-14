@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -462,6 +462,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -1236,6 +1237,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -2659,6 +2661,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -3409,6 +3412,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!4 &614580316
@@ -5004,6 +5008,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -6121,22 +6126,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f14c91571bd0a74086657e7cc1a3c9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Rank1Player: {fileID: 1842184133}
-  Rank2Player: {fileID: 1497193432}
-  Rank3Player: {fileID: 722362468}
-  Rank4Player: {fileID: 648453157}
-  Rank5Player: {fileID: 1165342432}
-  Rank6Player: {fileID: 841684564}
-  Rank7Player: {fileID: 1085361775}
-  Rank8Player: {fileID: 2144147102}
-  Rank1PlayerScore: {fileID: 1614744898}
-  Rank2PlayerScore: {fileID: 595943264}
-  Rank3PlayerScore: {fileID: 594763924}
-  Rank4PlayerScore: {fileID: 1556678799}
-  Rank5PlayerScore: {fileID: 1551398792}
-  Rank6PlayerScore: {fileID: 1071477876}
-  Rank7PlayerScore: {fileID: 1858995105}
-  Rank8PlayerScore: {fileID: 1849356945}
+  RankPlayer:
+  - {fileID: 1842184133}
+  - {fileID: 1497193432}
+  - {fileID: 722362468}
+  - {fileID: 648453157}
+  - {fileID: 1165342432}
+  - {fileID: 841684564}
+  - {fileID: 1085361775}
+  - {fileID: 2144147102}
+  PlayerScore:
+  - {fileID: 1614744898}
+  - {fileID: 595943264}
+  - {fileID: 594763924}
+  - {fileID: 1556678799}
+  - {fileID: 1551398792}
+  - {fileID: 1071477876}
+  - {fileID: 1858995105}
+  - {fileID: 1849356945}
   playerinfo: []
 --- !u!1 &1193803037
 GameObject:
@@ -6483,6 +6490,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -6750,6 +6758,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -9317,6 +9326,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -9461,6 +9471,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -11173,6 +11184,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -11311,6 +11323,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
 --- !u!223 &1919306726
 Canvas:
   m_ObjectHideFlags: 0
@@ -11984,6 +11997,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -12325,6 +12339,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -12457,6 +12472,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}

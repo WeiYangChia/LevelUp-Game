@@ -12,7 +12,7 @@ public class Countdown : MonoBehaviour
 {
     // Parameters for the timer
     float currentTime = 0f;
-    float startingTime = 5.49999f; //90.49999f
+    float startingTime = 60.49999f; //90.49999f
     float totalTime;
     double minutes;
     string min;
@@ -116,7 +116,7 @@ public class Countdown : MonoBehaviour
     {
         GameController.GetComponent<GameComplete>().stopMoving();
 
-        for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 4)
+        for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 2)
         {
             Color newColor = new Color(Mathf.Lerp(0.0f, 0.0f, t), Mathf.Lerp(0.0f, 0.0f, t), Mathf.Lerp(0.0f, 0.0f, t), Mathf.Lerp(0.0f, 1, t));
 
