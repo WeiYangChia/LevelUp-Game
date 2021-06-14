@@ -1,21 +1,15 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 
-/// <summary>
-/// This script is assigned to the active pad on each active block, to determine its behavior when it is assigned to a particular player.
-/// </summary>
-
-public class ActivatedBlock : MonoBehaviour
+public class TutorialBlock : MonoBehaviour
 {
-
-    // original inactive block material
+// original inactive block material
     public Material originalMaterial;
 
     // TileColorController class to determine Player Block and Countdown materials
     TileColorController TCC;
+    public TutorialPlatform TP;
 
     // Parent Block and Components
     GameObject parentBlock;
@@ -53,6 +47,7 @@ public class ActivatedBlock : MonoBehaviour
         // Get Parent Block and Components
         parentBlock = transform.parent.gameObject;
         TCC = parentBlock.transform.parent.gameObject.GetComponent<TileColorController>();
+        TP = parentBlock.transform.parent.gameObject.GetComponent<TutorialPlatform>();
         rend = parentBlock.GetComponent<MeshRenderer>();
         rb = parentBlock.GetComponent<Rigidbody>();
         highlight = parentBlock.transform.GetChild(1).gameObject;
@@ -220,6 +215,8 @@ public class ActivatedBlock : MonoBehaviour
 
             yield return null;
         }
+
+        TP.finishStage();
     }
 
     /// <summary>
@@ -294,7 +291,7 @@ public class ActivatedBlock : MonoBehaviour
         reward.transform.position = parentBlock.transform.position;
         reward.transform.Translate(new Vector3(0, -0.75f, 0));
 
-        StartCoroutine(TimeRewardCounter());
+        // StartCoroutine(TimeRewardCounter());
     }
 
     IEnumerator TimeRewardCounter()
@@ -319,5 +316,31 @@ public class ActivatedBlock : MonoBehaviour
 
     private void releaseTimeReward(){
         rewardController.deactivate();
+    }
+
+    public void startDropBlock(){
+        StartCoroutine("startDropBlockProcedure");
+    }
+
+    IEnumerator startDropBlockProcedure(){
+        int counter = 4;
+
+        var materials = rend.materials;
+
+        while (counter >= 0){
+            yield return new WaitForSeconds(1);
+
+            if (counter > 0){
+                materials[0] = TCC.getCountdownMaterial(counter);
+                rend.materials = materials;
+            }
+            else{
+                dropBlock();
+            }
+
+            counter--;
+        }
+        
+
     }
 }
