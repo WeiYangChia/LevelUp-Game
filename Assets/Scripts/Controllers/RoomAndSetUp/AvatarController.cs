@@ -75,20 +75,23 @@ public class AvatarController : MonoBehaviour
 
         playerList = LobbySetUp.LS.playerList;
 
+        InitializeButtons();
+        InitializeToggles(600);
+
         // Connects to the database
         Achievement playerinfo = new Achievement();
         string playerurl = "https://quizguyz.firebaseio.com/Users/" + Login.localid;
 
-        RestClient.Get(url: playerurl + ".json").Then(onResolved: response =>
-        {
-            //Get information of each player (Achievement points)
-            playerinfo = JsonConvert.DeserializeObject<Achievement>(response.Text);
+        //RestClient.Get(url: playerurl + ".json").Then(onResolved: response =>
+        //{
+        //    //Get information of each player (Achievement points)
+        //    playerinfo = JsonConvert.DeserializeObject<Achievement>(response.Text);
 
-            //Initialise the buttons and toggles
-            InitializeButtons();
-            InitializeToggles(playerinfo.achievementPoints);
+        //    //Initialise the buttons and toggles
+        //    InitializeButtons();
+        //    InitializeToggles(playerinfo.achievementPoints);
 
-        });
+        //});
     }
 
     /// <summary>
