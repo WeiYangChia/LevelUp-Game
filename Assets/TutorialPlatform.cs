@@ -162,6 +162,9 @@ public class TutorialPlatform : MonoBehaviour
         
         inDialogue = false;
         PC.moveable = true;
-        inStage = false;
+
+        if (stage == 1 || stage == 4){
+            inStage = false;
+        }
     }
 }
