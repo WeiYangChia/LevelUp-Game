@@ -41,6 +41,8 @@ public class ActivatedBlock : MonoBehaviour
     int timeRewardLimit = 4;
     timeReward rewardController;
 
+    public bool droppingBlock;
+
     /// <summary>
     /// This function is called each time the ActivatedBlock script is enabled by the Platform
     /// It obtains references to necessary components on the parent block to be changed.
@@ -131,6 +133,8 @@ public class ActivatedBlock : MonoBehaviour
         int counter = Mathf.RoundToInt(GameObject.FindWithTag("GameController").GetComponent<QuestionManager>().getMaxTime());
         bool moveableChanged = false;
 
+        droppingBlock = false;
+
         while (counter > 0)
         {
             yield return new WaitForSeconds(1);
@@ -151,6 +155,11 @@ public class ActivatedBlock : MonoBehaviour
                 question.SetActive(false);
 
                 StartCoroutine("HighlightFadeOut");
+
+                if (!droppingBlock){
+                    droppingBlock = true;
+                    startDropBlock();
+                }
              
             }
 
@@ -158,6 +167,7 @@ public class ActivatedBlock : MonoBehaviour
             else if (question.GetComponent<DoQuestion>().answered == true && question.GetComponent<DoQuestion>().correct == false)
             {
                 StartCoroutine("HighlightFadeOut");
+                droppingBlock = true;
                 dropBlock();
                 yield return new WaitForSeconds(3);
                 Destroy(transform.parent.gameObject);
@@ -187,6 +197,7 @@ public class ActivatedBlock : MonoBehaviour
                     StartCoroutine("HighlightFadeOut");
                 }
 
+                droppingBlock = true;
                 dropBlock();
                 yield return new WaitForSeconds(3);
                 Destroy(transform.parent.gameObject);
