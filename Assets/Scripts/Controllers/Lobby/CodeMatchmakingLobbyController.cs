@@ -70,7 +70,7 @@ public class CodeMatchmakingLobbyController : MonoBehaviourPunCallbacks
     /// </summary>
     private void Start()
     {
-        LobbyPanel.SetActive(false);
+        LobbyPanel.SetActive(true);
     }
 
     /// <summary>

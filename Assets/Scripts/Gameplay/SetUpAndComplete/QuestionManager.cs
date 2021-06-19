@@ -120,7 +120,6 @@ public class QuestionManager : MonoBehaviour
     public Dictionary<string, object> getRandomQuestion()
     {
         string url = "https://drive.google.com/uc?export=download&id=";
-        List<string> tempLoc = new List<string>();
         List<string> tempOpt = new List<string>();
         List<string> finalLoc = new List<string>();
         List<string> finalOpt = new List<string>();
@@ -139,11 +138,6 @@ public class QuestionManager : MonoBehaviour
         MatrixReasoningQ tempMRQ = MRQ[temp];
         print(tempMRQ.ID);
 
-        tempLoc.Add(url + tempMRQ.Correct.Loc);
-        tempLoc.Add(url + tempMRQ.diff1.Distractor1.Loc);
-        tempLoc.Add(url + tempMRQ.diff1.Distractor2.Loc);
-        tempLoc.Add(url + tempMRQ.diff1.Distractor3.Loc);
-
         tempOpt.Add(tempMRQ.Correct.Name);
         tempOpt.Add(tempMRQ.diff1.Distractor1.Name);
         tempOpt.Add(tempMRQ.diff1.Distractor2.Name);
@@ -154,9 +148,8 @@ public class QuestionManager : MonoBehaviour
         chosen.Add("bonusTimeLimit"  ,getBonusTimeLimit());
         chosen.Add("maxTime", getMaxTime());
         chosen.Add("questionloc", url + tempMRQ.Question.Loc);
-        chosen.Add("options", tempLoc);
 
-        StartCoroutine(DownloadQImage((string)chosen["questionloc"], chosen));
+        StartCoroutine(DownloadQImage((string)tempMRQ.Question.Name, chosen));
 
         int tempNum;
         List<int> numbers = new List<int>();
@@ -172,8 +165,7 @@ public class QuestionManager : MonoBehaviour
             {
                 chosen.Add("Correct", i);
             }
-            StartCoroutine(DownloadOptionImage(tempLoc[numbers[tempNum]], i, chosen));
-            finalLoc.Add(tempLoc[numbers[tempNum]]);
+            StartCoroutine(DownloadOptionImage(tempOpt[numbers[tempNum]], i, chosen));
             finalOpt.Add(tempOpt[numbers[tempNum]]);
             numbers.Remove(numbers[tempNum]);
         }
@@ -181,48 +173,61 @@ public class QuestionManager : MonoBehaviour
         {
             randomQuestions();
         }
-        chosen.Add("OptionLoc", finalLoc);
         chosen.Add("OptionPlacement", finalOpt);
         questionNumber++;
         print(JsonConvert.SerializeObject(chosen));
         return chosen;
     }
 
-    IEnumerator DownloadOptionImage(string MediaUrl, int i, Dictionary<string, object> tempData)
+    IEnumerator DownloadOptionImage(string OptionImage, int i, Dictionary<string, object> tempData)
     {
-        
-        UnityWebRequest request = UnityWebRequestTexture.GetTexture(MediaUrl);
-        yield return request.SendWebRequest();
-        if (request.isNetworkError || request.isHttpError)
-        {
-            Debug.Log(request.error);
-            print(MediaUrl);
-        }
+        var fileUrl = "https://firebasestorage.googleapis.com/v0/b/test-ebe23.appspot.com/o/Matrix_Reasoning%2F" + OptionImage + ".png?alt=media";
 
-        else
+        using (var www = UnityWebRequestTexture.GetTexture(fileUrl))
         {
-            tempData.Add(i.ToString(), ((DownloadHandlerTexture)request.downloadHandler).texture);
-            print("Image loaded for" + i.ToString());
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+                print(fileUrl);
+            }
+            else
+            {
+                if (www.isDone)
+                {
+                    var temp = DownloadHandlerTexture.GetContent(www);
+                    tempData.Add(i.ToString(), temp);
+                    print("Image loaded for" + i.ToString());
+                }
+            }
         }
     }
 
-    IEnumerator DownloadQImage(string MediaUrl, Dictionary<string, object> tempData)
+    IEnumerator DownloadQImage(string QImageName, Dictionary<string, object> tempData)
     {
-        
-        UnityWebRequest request = UnityWebRequestTexture.GetTexture(MediaUrl);
-        yield return request.SendWebRequest();
-        if (request.isNetworkError || request.isHttpError)
-        {
-            Debug.Log(request.error);
-            print(MediaUrl);
-        }
+        var fileUrl = "https://firebasestorage.googleapis.com/v0/b/test-ebe23.appspot.com/o/Matrix_Reasoning%2F" + QImageName + ".png?alt=media";
 
-        else
+        using (var www = UnityWebRequestTexture.GetTexture(fileUrl))
         {
-            tempData["question"] = ((DownloadHandlerTexture)request.downloadHandler).texture;
-            print("question loaded");
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                if (www.isDone)
+                {
+                    var temp = DownloadHandlerTexture.GetContent(www);
+                    tempData["question"] = temp;
+                    print("question loaded");
+                }
+            }
         }
     }
+    
 
 
     /// <summary>
@@ -238,7 +243,6 @@ public class QuestionManager : MonoBehaviour
         Dictionary<string, object> qToSend = new Dictionary<string, object>();
         qToSend.Add("ID", (string)questionInfo["ID"]);
         qToSend.Add("question", (string)questionInfo["questionloc"]);
-        qToSend.Add("OptionLoc", (List<string>)questionInfo["OptionLoc"]);
         qToSend.Add("OptionPlacement", (List<string>)questionInfo["OptionPlacement"]);
         qToSend.Add("mouseMovement", (string)mouseheatmap);
         qToSend.Add("answer", (bool)answer);

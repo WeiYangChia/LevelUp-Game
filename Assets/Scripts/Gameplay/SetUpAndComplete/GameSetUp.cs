@@ -25,10 +25,10 @@ public class GameSetUp : MonoBehaviour
 
     // Spawn points for each player
     public Transform spawnPoint;
-    // public Transform[] spawnPoints1;
-    // public Transform[] spawnPoints2;
-    // public Transform[] spawnPoints3;
-    // public Transform[] spawnPoints4;
+    public Transform[] spawnPoints1;
+    public Transform[] spawnPoints2;
+    public Transform[] spawnPoints3;
+    public Transform[] spawnPoints4;
 
     // Parameters for instantiation of each avatar
     public GameObject canvas;
@@ -61,34 +61,34 @@ public class GameSetUp : MonoBehaviour
     void Start()
     {
         // Activate correct map based on mapIndex
-        // mapIndex = MapController.mapIndex;
-        // ArenaCon.GetComponent<ArenaController>().setUpMap(mapIndex);
+        mapIndex = MapController.mapIndex;
+        ArenaCon.GetComponent<ArenaController>().setUpMap(mapIndex);
 
         // // select correct spawnpoints based on map chosen
-        // Transform[] spawnPoints = null;
-        // switch (mapIndex)
-        // {
-        //     case 0:
-        //         spawnPoints = spawnPoints1;
-        //         break;
+        Transform[] spawnPoints = null;
+        switch (mapIndex)
+        {
+            case 0:
+                spawnPoints = spawnPoints1;
+                break;
 
-        //     case 1:
-        //         spawnPoints = spawnPoints2;
-        //         break;
+            case 1:
+                spawnPoints = spawnPoints2;
+                break;
 
-        //     case 2:
-        //         spawnPoints = spawnPoints3;
-        //         break;
+            case 2:
+                spawnPoints = spawnPoints3;
+                break;
 
-        //     case 3:
-        //         spawnPoints = spawnPoints4;
-        //         break;
-        // }
+            case 3:
+                spawnPoints = spawnPoints4;
+                break;
+        }
 
         // Initialize player avatar settings
 
-        // string curUserName = PhotonNetwork.LocalPlayer.NickName;
-        string curUserName = "Tester";
+        string curUserName = PhotonNetwork.LocalPlayer.NickName;
+        //string curUserName = "Tester";
 
         // int avatarSelection = LobbySetUp.LS.playerList[curUserName];
         int avatarSelection = 21;

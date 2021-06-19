@@ -263,7 +263,6 @@ public class DoQuestion : MonoBehaviour
 
     void SubmitClick()
     {
-        prev.gameObject.SetActive(true);
         prev.Select();
         int count = Array.IndexOf(buttons,prev);
         bool answer = (count == (int)question["Correct"]);

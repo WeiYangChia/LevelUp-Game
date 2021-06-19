@@ -20,7 +20,15 @@ public class ArenaController : MonoBehaviour
 
     public void setUpMap(int mapIndex)
     {
-        activeMapIndex = mapIndex;
+        if (mapIndex<= maps.Length && mapIndex > 0)
+        {
+            activeMapIndex = mapIndex;
+        }
+        else
+        {
+            activeMapIndex = 0;
+        }
+        print(activeMapIndex);
 
         // ensures all other maps are inactive
         for (int i = 0; i < maps.Length; i++)
@@ -29,6 +37,6 @@ public class ArenaController : MonoBehaviour
         }
 
         // sets chosen map as active
-        maps[mapIndex].SetActive(true);
+        maps[activeMapIndex].SetActive(true);
     }
 }
