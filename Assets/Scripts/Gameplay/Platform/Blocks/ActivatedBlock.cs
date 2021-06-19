@@ -320,4 +320,28 @@ public class ActivatedBlock : MonoBehaviour
     private void releaseTimeReward(){
         rewardController.deactivate();
     }
+
+    public void startDropBlock(){
+        StartCoroutine("startDropBlockProcedure");
+    }
+
+    IEnumerator startDropBlockProcedure(){
+        int counter = 4;
+
+        var materials = rend.materials;
+
+        while (counter >= 0){
+            yield return new WaitForSeconds(1);
+
+            if (counter > 0){
+                materials[0] = TCC.getCountdownMaterial(counter);
+                rend.materials = materials;
+            }
+            else{
+                dropBlock();
+            }
+
+            counter--;
+        }
+    }
 }

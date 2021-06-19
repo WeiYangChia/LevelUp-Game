@@ -35,6 +35,8 @@ public class TutorialBlock : MonoBehaviour
     int timeRewardLimit = 4;
     timeReward rewardController;
 
+    bool invokedTPfinishStage;
+
     /// <summary>
     /// This function is called each time the ActivatedBlock script is enabled by the Platform
     /// It obtains references to necessary components on the parent block to be changed.
@@ -126,6 +128,8 @@ public class TutorialBlock : MonoBehaviour
         int counter = Mathf.RoundToInt(GameObject.FindWithTag("GameController").GetComponent<QuestionManager>().getMaxTime());
         bool moveableChanged = false;
 
+        invokedTPfinishStage = false;
+
         while (counter > 0)
         {
             yield return new WaitForSeconds(1);
@@ -146,6 +150,14 @@ public class TutorialBlock : MonoBehaviour
                 question.SetActive(false);
 
                 StartCoroutine("HighlightFadeOut");
+
+                if (!invokedTPfinishStage){
+                    invokedTPfinishStage = true;
+                    print("Block invokes finish stage");
+                    TP.finishStage();
+                }
+
+                
              
             }
 
@@ -161,6 +173,12 @@ public class TutorialBlock : MonoBehaviour
                 if (!player.GetComponent<PlayerController>().respawning)
                 {
                     player.GetComponent<PlayerController>().moveable = true;
+                }
+
+                if (!invokedTPfinishStage){
+                    invokedTPfinishStage = true;
+                    print("Block invokes finish stage");
+                    TP.finishStage();
                 }
             }
 
@@ -191,6 +209,13 @@ public class TutorialBlock : MonoBehaviour
                 {
                     player.GetComponent<PlayerController>().moveable = true;
                 }
+
+                
+                if (!invokedTPfinishStage){
+                    invokedTPfinishStage = true;
+                    print("Block invokes finish stage");
+                    TP.finishStage();
+                }
                 
                 break;
             }
@@ -215,8 +240,6 @@ public class TutorialBlock : MonoBehaviour
 
             yield return null;
         }
-
-        TP.finishStage();
     }
 
     /// <summary>

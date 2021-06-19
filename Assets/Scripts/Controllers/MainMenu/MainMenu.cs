@@ -74,16 +74,18 @@ public class MainMenu : MonoBehaviour
     /// </summary>
     public void OpenInstructionsOnClick()
     {
-        InstructionPanel.SetActive(true);
-        MenuPanel.SetActive(false);
+        SceneManager.LoadScene("Tutorial");
+        
+        // InstructionPanel.SetActive(true);
+        // MenuPanel.SetActive(false);
     }
     /// <summary>
     /// Closes the instructions when the player clicks the back button.
     /// </summary>
-    public void CloseInstructionsOnClick()
-    {
-        InstructionPanel.SetActive(false);
-        MenuPanel.SetActive(true);
-    }
+    // public void CloseInstructionsOnClick()
+    // {
+    //     InstructionPanel.SetActive(false);
+    //     MenuPanel.SetActive(true);
+    // }
 
 }
