@@ -52,8 +52,8 @@ public class QuestionManager : MonoBehaviour
 
     void Start()
     {
-        // LS = LS.GetComponent<Loading_Screen>();
-        // LS.percentageValues(16);
+        LS = LS.GetComponent<Loading_Screen>();
+        LS.percentageValues(16);
         // Initialize settings:
         // Category = MapController.Category;
         // Difficulty = MapController.Difficulty;
