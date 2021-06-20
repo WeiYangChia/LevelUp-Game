@@ -16,8 +16,6 @@ using Photon.Realtime;
 public class AvatarController : MonoBehaviour
 {
 
-    public bool isCreator = false;
-
     // Panels
     public GameObject RoomPanel;
     public GameObject AvatarPanel;
@@ -51,7 +49,7 @@ public class AvatarController : MonoBehaviour
 
     //Store User (username) of p1-4 and Character selection
 
-    private Dictionary<string, int> playerList = new Dictionary<string, int>();
+    private int playerData;
     
     public int maxPlayers = -1;
     private bool platformsInitialized = false;
@@ -71,9 +69,7 @@ public class AvatarController : MonoBehaviour
     /// </summary>
     private void OnEnable()
     {
-        PV = GetComponent<PhotonView>();
-
-        playerList = LobbySetUp.LS.playerList;
+        playerData = LobbySetUp.LS.playerData;
 
         InitializeButtons();
         InitializeToggles(600);
@@ -111,36 +107,6 @@ public class AvatarController : MonoBehaviour
     }
 
     /// <summary>
-    /// This function is called to add player data and called when a player is joins the room
-    /// </summary>
-    /// <param name="newUsername"></param>
-    /// <param name="selfSync"></param>
-    public void addPlayer(string newUsername, bool selfSync)
-    {
-        // Updates player list
-        LobbySetUp.LS.playerList.Add(newUsername, -1);
-
-        PV.RPC("updateTotalUI", RpcTarget.All);
-
-        if (selfSync)
-        {
-            PV.RPC("updateAvatar", RpcTarget.All, Login.currentUser.username, curSelection);
-        }
-    }
-
-    /// <summary>
-    /// This function is called to remove player data and called when a player leaves the room
-    /// </summary>
-    /// <param name="oldUsername"></param>
-    public void removePlayer(string oldUsername)
-    {
-        // Updates player list
-        LobbySetUp.LS.playerList.Remove(oldUsername);
-
-        PV.RPC("updateTotalUI", RpcTarget.All);
-    }
-
-    /// <summary>
     /// Updates the avatar selected by the player (Character + color)
     /// </summary>
     /// <param name="userName"></param>
@@ -149,14 +115,13 @@ public class AvatarController : MonoBehaviour
     public void updateAvatar(string userName, int picIndex)
     {
         // Sets the previous color index chosen to be no longer taken
-        if (playerList[userName] != -1)
+        if (playerData != -1)
         {
-            int oldColorIndex = playerList[userName] % 10;
+            int oldColorIndex = playerData;
             colorTaken[oldColorIndex] = false;
-
         }
         // Sets the avatar selected by the player
-        playerList[userName] = picIndex;
+        playerData = picIndex;
 
         // Sets the current color index chosen to be taken
         int colorIndex = picIndex % 10;
@@ -170,34 +135,34 @@ public class AvatarController : MonoBehaviour
     /// This function handles any state change to the room UI (When players join/leave the room)
     /// PunRPC enables method-calls on remote clients in the same room.
     /// </summary>
-    [PunRPC]
-    void updateTotalUI()
-    {
-        int i = 0;
-        if (LobbySetUp.LS.CurrentNames.Count > 0)
-        {
-            // For every player in the player list, set their names and display their avatar
-            foreach (KeyValuePair<string, int> player in playerList)
-            {
-                // Set Name:
-                LobbySetUp.LS.CurrentNames[i].SetText(player.Key);
+    // [PunRPC]
+    // void updateTotalUI()
+    // {
+    //     int i = 0;
+    //     if (LobbySetUp.LS.CurrentNames.Count > 0)
+    //     {
+    //         // For every player in the player list, set their names and display their avatar
+    //         foreach (KeyValuePair<string, int> player in playerList)
+    //         {
+    //             // Set Name:
+    //             LobbySetUp.LS.CurrentNames[i].SetText(player.Key);
 
-                // Set Avatar:
-                displayAvatar(LobbySetUp.LS.CurrentAvatars[i], player.Value);
+    //             // Set Avatar:
+    //             displayAvatar(LobbySetUp.LS.CurrentAvatars[i], player.Value);
 
-                i++;
-            }
-            // For every subsequent slot (empty as no player yet), set their name to empty and delete their avatar
-            for (int j = i; j < LobbySetUp.LS.CurrentNames.Count; j++)
-            {
-                //Delete name
-                LobbySetUp.LS.CurrentNames[j].SetText("");
+    //             i++;
+    //         }
+    //         // For every subsequent slot (empty as no player yet), set their name to empty and delete their avatar
+    //         for (int j = i; j < LobbySetUp.LS.CurrentNames.Count; j++)
+    //         {
+    //             //Delete name
+    //             LobbySetUp.LS.CurrentNames[j].SetText("");
 
-                //Delete avatar
-                destroyAvatar(LobbySetUp.LS.CurrentAvatars[j]);
-            }
-        }
-    }
+    //             //Delete avatar
+    //             destroyAvatar(LobbySetUp.LS.CurrentAvatars[j]);
+    //         }
+    //     }
+    // }
     
     /// <summary>
     /// Destroys the avatar by setting sprite to null and color to transparent
@@ -268,22 +233,22 @@ public class AvatarController : MonoBehaviour
     /// <summary>
     /// Activated when the player confirms the character chosen
     /// </summary>
-    public void ConfirmCharacterOnClick()
-    {
-        if (colorTaken[curSelection % 10] && ((curSelection % 10) != (playerList[Login.currentUser.username] % 10)))
-        {
-            updateAvailableColors();
-        }
-        else
-        {
-            // Brings the player back to the room panel
-            AvatarPanel.SetActive(false);
-            RoomPanel.SetActive(true);
+    // public void ConfirmCharacterOnClick()
+    // {
+    //     if (colorTaken[curSelection % 10] && ((curSelection % 10) != (playerList[Login.currentUser.username] % 10)))
+    //     {
+    //         updateAvailableColors();
+    //     }
+    //     else
+    //     {
+    //         // Brings the player back to the room panel
+    //         AvatarPanel.SetActive(false);
+    //         RoomPanel.SetActive(true);
 
-            // Updates the avatar selected by the player for all clients in the room
-            PV.RPC("updateAvatar", RpcTarget.All, Login.currentUser.username, curSelection);
-        }
-    }
+    //         // Updates the avatar selected by the player for all clients in the room
+    //         PV.RPC("updateAvatar", RpcTarget.All, Login.currentUser.username, curSelection);
+    //     }
+    // }
 
 
     /// <summary>

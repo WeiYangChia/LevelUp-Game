@@ -1,6 +1,4 @@
-﻿using Photon.Pun;
-using Photon.Realtime;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -10,7 +8,7 @@ using System.Collections.Generic;
 /// This script processes all logic required for players in the room and is assigned to the CodeMatchmakingRoomController game object.
 /// it controls the logic of players joining or leaving the room, as well as the logic of the host starting the game or cancelling the room
 /// </summary>
-public class CodeMatchmakingRoomController : MonoBehaviourPunCallbacks
+public class CodeMatchmakingRoomController : MonoBehaviour
 {
     // Player count display
     [SerializeField]
@@ -50,112 +48,15 @@ public class CodeMatchmakingRoomController : MonoBehaviourPunCallbacks
     /// </summary>
     private bool readyToStart()
     {
-        if (LobbySetUp.LS.playerList.Count == PhotonNetwork.PlayerList.Length)
-        {
-            for (int i = 0; i < LobbySetUp.LS.playerList.Count; i++)
-            {
-                if (LobbySetUp.LS.playerList[PhotonNetwork.PlayerList[i].NickName] == -1)
-                {
-                    return false;
-                }
-            }
+        if (LobbySetUp.LS.playerData == -1){
+            return false;
+        }
 
-            if (MapController.mapIndex == -1)
-            {
-                return false;
-            }
-
-            return true;
+        if (MapController.mapIndex == -1){
+            return false;
         }
 
         return true;
-    }
-
-    /// <summary>
-    /// This is a callback function provided in the MonoBehaviourPunCallbacks class provided by PUN 2
-    /// Called when the LoadBalancingClient entered a room, no matter if this client created it or simply joined.
-    /// </summary>
-    public override void OnJoinedRoom()
-    {
-
-        GetComponent<AvatarController>().enabled = true;
-
-        LobbyPanel.SetActive(false);
-        RoomPanel.SetActive(true);
-
-        playerCount.text = "Players: " + PhotonNetwork.PlayerList.Length;
-
-
-        for (int i = 0; i < PhotonNetwork.CurrentRoom.MaxPlayers; i++)
-        {
-            LobbySetUp.LS.platforms[i].gameObject.SetActive(true);
-            LobbySetUp.LS.CurrentAvatars.Add(LobbySetUp.LS.Avatars[i]);
-            LobbySetUp.LS.CurrentNames.Add(LobbySetUp.LS.Names[i]);
-        }
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            startButton.gameObject.SetActive(true);
-            cancelButton.gameObject.SetActive(true);
-            mapButton.gameObject.SetActive(true);
-            mapButton.interactable = true;
-        }
-        else
-        {
-            leaveButton.gameObject.SetActive(true);
-            mapButton.gameObject.SetActive(true);
-            mapButton.interactable = false;
-        }
-
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-        {
-            gameObject.GetComponent<AvatarController>().addPlayer(PhotonNetwork.PlayerList[i].NickName, false);
-        }
-    }
-
-    /// <summary>
-    /// This is a callback function provided in the MonoBehaviourPunCallbacks class provided by PUN 2
-    /// Called when a remote player entered the room. 
-    /// This Player is already added to the playerlist.
-    /// </summary>
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        // The player count is updated for each client
-        playerCount.text = PhotonNetwork.PlayerList.Length + " Players";
-
-        // This calls the addPlayer() function in the AvatarController class
-        gameObject.GetComponent<AvatarController>().addPlayer(newPlayer.NickName, true);
-    }
-
-    /// <summary>
-    /// This is a callback function provided in the MonoBehaviourPunCallbacks class provided by PUN 2
-    /// Called when a remote player left the room or became inactive. 
-    /// </summary>
-    public override void OnPlayerLeftRoom(Player otherPlayer)
-    {
-        // The player count is updated for each client
-        playerCount.text = PhotonNetwork.PlayerList.Length + " Players";
-
-        // This calls the removePlayer() function in the AvatarController class
-        gameObject.GetComponent<AvatarController>().removePlayer(otherPlayer.NickName);
-    }
-
-    /// <summary>
-    /// This is a callback function provided in the MonoBehaviourPunCallbacks class provided by PUN 2 
-    /// Called when the local user/client left a room, so the game's logic can clean up it's internal state.
-    /// When leaving a room, the LoadBalancingClient will disconnect the Game Server and connect to the Master Server.
-    /// </summary>
-    public override void OnLeftRoom()
-    {
-        Debug.Log("Player left the room");
-        gameObject.SetActive(false);
-        playerCount.text = "0 Players";
-
-        gameObject.GetComponent<MapController>().resetMap();
-
-
-        PhotonNetwork.Disconnect();
-        SceneManager.LoadScene("CodeMatchMakingMenuDemo");
     }
 
     /// <summary>
@@ -164,18 +65,11 @@ public class CodeMatchmakingRoomController : MonoBehaviourPunCallbacks
     /// </summary>
     public void StartGameOnClick()
     {
-        for (int i = 0; i < LobbySetUp.LS.playerList.Count; i++)
-        {
-            if (LobbySetUp.LS.playerList[PhotonNetwork.PlayerList[i].NickName] == -1)
-            {
-                return;
-            }
+        if (!readyToStart()){
+            return;
         }
-
-        PhotonNetwork.LoadLevel(multiplayerSceneIndex);
-        // Set current room state such that it cannot be joined or viewed
-        PhotonNetwork.CurrentRoom.IsOpen = false;
-        PhotonNetwork.CurrentRoom.IsVisible = false;
+        
+        SceneManager.LoadScene("MainGame");
     }
 
     /// <summary>
@@ -183,30 +77,6 @@ public class CodeMatchmakingRoomController : MonoBehaviourPunCallbacks
     /// </summary>
     public void CancelRoomOnClick()
     {
-        // This requests each player client to disconnect if the requesting user is the master client.
-        if (PhotonNetwork.IsMasterClient)
-        {
-            foreach (Player player in PhotonNetwork.PlayerList)
-            {
-                PhotonNetwork.CloseConnection(player);
-            }
-        }
-        // Leave the current room and return to the Master Server where you can join or create rooms
-        PhotonNetwork.LeaveRoom();
-        RoomPanel.SetActive(false);
+        SceneManager.LoadScene("Main Menu");
     }
-
-    /// <summary>
-    /// Leaves the room when clicked, only available for players who are not the host.
-    /// </summary>
-    public void LeaveRoomOnClick()
-    {
-        // Checks whether the player is in the room, if so,
-        // Leave the current room and return to the Master Server where you can join or create rooms
-        if (PhotonNetwork.InRoom)
-        {
-            PhotonNetwork.LeaveRoom();
-        }
-    }
-
 }

@@ -23,7 +23,7 @@ public class LobbySetUp : MonoBehaviour
     public List<TextMeshProUGUI> CurrentNames = new List<TextMeshProUGUI>();
 
     // Player List that stores data of the players in the room
-    public Dictionary<string, int> playerList = new Dictionary<string, int>();
+    public int playerData;
 
     // Category and difficulty variables
     public int category;

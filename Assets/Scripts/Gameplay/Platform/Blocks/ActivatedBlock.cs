@@ -41,6 +41,7 @@ public class ActivatedBlock : MonoBehaviour
     int timeRewardLimit = 4;
     timeReward rewardController;
 
+    public bool correctDroppingBlock;
     public bool droppingBlock;
 
     /// <summary>
@@ -133,7 +134,7 @@ public class ActivatedBlock : MonoBehaviour
         int counter = Mathf.RoundToInt(GameObject.FindWithTag("GameController").GetComponent<QuestionManager>().getMaxTime());
         bool moveableChanged = false;
 
-        droppingBlock = false;
+        correctDroppingBlock = false;
 
         while (counter > 0)
         {
@@ -156,9 +157,10 @@ public class ActivatedBlock : MonoBehaviour
 
                 StartCoroutine("HighlightFadeOut");
 
-                if (!droppingBlock){
-                    droppingBlock = true;
+                if (!correctDroppingBlock){
+                    correctDroppingBlock = true;
                     startDropBlock();
+                    
                 }
              
             }

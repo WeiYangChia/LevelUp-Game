@@ -13,7 +13,6 @@ using Photon.Pun;
 public class ActivePlatform : MonoBehaviour
 {
     // Active Block Generation Parameters:
-    public int cooldownAB = 8;
     bool putActiveBlock = true;
 
     // Collection of Blocks
@@ -27,6 +26,9 @@ public class ActivePlatform : MonoBehaviour
 
     // Information on ALL existing players in game:
     public GameObject player;
+
+    // timereward give/don't give
+    public bool prevCorrect = false;
 
     /// <summary>
     /// Start is called before first frame update,
@@ -62,8 +64,15 @@ public class ActivePlatform : MonoBehaviour
             }
         }
 
-        if (ABscript != null && ABscript.droppingBlock){
-            putActiveBlock = true;
+        if (ABscript != null){
+            if (ABscript.correctDroppingBlock){
+                putActiveBlock = true;
+                prevCorrect = true;
+            }
+            else if (ABscript.droppingBlock){
+                putActiveBlock = true;
+                prevCorrect = false;
+            }
         }
 
         // Conducts randomization of blocks for the local player.
@@ -115,14 +124,16 @@ public class ActivePlatform : MonoBehaviour
 
         ABscript = block.transform.GetChild(0).gameObject.GetComponent<ActivatedBlock>();
         ABscript.colorIndex = player.GetComponent<PlayerController>().colorIndex;
+        if (prevCorrect){
+            ABscript.timeReward = true;
+            prevCorrect = false;
+        }
+
         ABscript.enabled = true;
 
         ABscript.blockActivated = true;
 
         putActiveBlock = false;
-
-        // Initiate cooldown to determine when a certain player should be assigned a new block
-        StartCoroutine(CooldownAB());
 
     }
 
@@ -139,27 +150,5 @@ public class ActivePlatform : MonoBehaviour
 
         curABScript.blockActivated = false;
         curABScript.enabled = false;
-    }
-
-    /// <summary>
-    /// This function is used to track the time since a block has been activated for a particular user.
-    /// If the specified time is up, then a new block should be assigned to the user.
-    /// </summary>
-    /// <returns></returns>
-    IEnumerator CooldownAB()
-    {
-        int counter = cooldownAB;
-
-        while (counter > 0)
-        {
-            yield return new WaitForSeconds(1);
-            counter--;
-
-            if (counter < 1)
-            {
-                prevNum = curNum;
-                putActiveBlock = true;
-            }
-        }
     }
 }
