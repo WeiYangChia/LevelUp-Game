@@ -64,9 +64,8 @@ public class Record
         this.Rank = rank;
     }
 
-    public void attachResponses(Dictionary<string, int> resp, Dictionary<string, object> MRQRecord)
+    public void attachResponses(Dictionary<string, object> MRQRecord)
     {
-        this.Responses = resp;
         this.MRQ = MRQRecord;
     }
 }

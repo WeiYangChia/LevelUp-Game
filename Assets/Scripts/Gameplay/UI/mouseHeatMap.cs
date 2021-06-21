@@ -3,86 +3,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using Newtonsoft.Json;
 
 public class mouseHeatMap : MonoBehaviour
 {
     public static mouseHeatMap HMap;
-    public List<List<int>> mapping = new List<List<int>>();
-    public List<List<float>> positions = new List<List<float>>();
+    public List<RawImage> selection;
+    private int count;
+    public Dictionary<int, Dictionary<string, float>> MouseMovements;
 
     // Start is called before the first frame update
     void Start()
     {
-        positions = new List<List<float>>();
-        newMaps();
+        newMouseTracking();
     }
 
-    void Update()
+
+    public void newMouseTracking()
     {
-        Vector3 mousePos = Input.mousePosition;
-        List<float> temp = new List<float>();
-        temp.Add(mousePos.x);
-        temp.Add(mousePos.y);
-        positions.Add(temp);
+        count = 0;
+        MouseMovements = new Dictionary<int, Dictionary<string, float>>() ;
     }
 
-    void newMaps()
+    public void RecordMouse(string location, float timing)
     {
-        mapping = new List<List<int>>();
-        for (int i = 0; i<800; i++)
-        {
-            List<int> sublist = new List<int>();
-            for(int j = 0; j<400; j++)
-            {
-                sublist.Add(0);
-            }
-            mapping.Add(sublist);
-        }
+        Dictionary<string, float> toAdd = new Dictionary<string, float>();
+        toAdd.Add(location, timing);
+        MouseMovements.Add(count, toAdd);
+        count += 1;
     }
 
-    public string getMaps()
+    public Dictionary<int, Dictionary<string, float>> getMaps()
     {
-        string toSend = "";
-        if (positions.Count > 0)
-        {
-            foreach (List<float> item in positions)
-            {
-                if (0<item[0]&& item[0] < 800 && 0<item[1]&& item[1] < 400)
-                {
-                    mapping[(int)item[0]][(int)item[1]] += 1;
-                }
-                
-            }
-
-            //foreach (List<int> values in mapping)
-            //{
-            //    foreach (float value in values)
-            //    {
-            //        toSend += value.ToString();
-            //    }
-            //    toSend += ".";
-
-            //}
-            newMaps();
-            return toSend;
-        }
+        Dictionary<int, Dictionary<string, float>> toSend = MouseMovements;
+        newMouseTracking();
         return toSend;
+        
     }
 
-    public void Display(List<List<int>> list)
-    {
-        string newLine = "";
-        print("Elements:");
-        foreach (var sublist in list)
-        {
-            newLine = "";
-            foreach (var value in sublist)
-            {
-                newLine += value.ToString();
-            }
-            print(newLine);
 
-        }
-    }
 }
 

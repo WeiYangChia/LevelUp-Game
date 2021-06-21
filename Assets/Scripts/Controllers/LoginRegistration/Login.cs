@@ -15,7 +15,7 @@ public class Login : MonoBehaviour
     private string databaseURL = "https://test-ebe23.firebaseio.com/Users/";
     public static string localid;
     public string idToken;
-    public string username = null;
+    public static string username = null;
     public bool? success = null;
     public bool usernameGet = false; 
     public bool displayFail = false;
@@ -98,7 +98,7 @@ public class Login : MonoBehaviour
 
     private void PostToDatabase()
     {
-        User user = new User(username, localid);
+        User user = new User(username, localid, 0);
         RestClient.Put(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Users/" + localid + ".json", user).Then(onResolved:response => {
             currentUser = user;
             loadScene();
@@ -128,7 +128,8 @@ public class Login : MonoBehaviour
         {
             User user = JsonConvert.DeserializeObject<User>(response.Text);
             username = user.username;
-            currentUser = new User(username, localid);
+            int totalPoints = user.Total_Points;
+            currentUser = new User(username, localid, totalPoints);
             usernameGet = true;
         });     
     }

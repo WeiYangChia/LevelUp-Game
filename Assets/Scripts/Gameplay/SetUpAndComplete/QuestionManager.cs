@@ -236,17 +236,17 @@ public class QuestionManager : MonoBehaviour
     /// <param name="questionNum"></param>
     /// <param name="resp"></param>
 
-    public void recordResponse(Dictionary<string, object> questionInfo, int resp, string mouseheatmap, bool answer, float curTime=0f)
+    public void recordResponse(Dictionary<string, object> questionInfo, int resp, Dictionary<int, Dictionary<string, float>> mouseheatmap, bool answer, float curTime=0f)
     {
         newQ = true;
-        responses.Add((string)questionInfo["ID"], resp);
+        //responses.Add((string)questionInfo["ID"], resp);
         Dictionary<string, object> qToSend = new Dictionary<string, object>();
         qToSend.Add("ID", (string)questionInfo["ID"]);
-        qToSend.Add("question", (string)questionInfo["questionloc"]);
         qToSend.Add("OptionPlacement", (List<string>)questionInfo["OptionPlacement"]);
-        qToSend.Add("mouseMovement", (string)mouseheatmap);
+        qToSend.Add("mouseMovement", (Dictionary<int, Dictionary<string, float>>)mouseheatmap);
         qToSend.Add("answer", (bool)answer);
         qToSend.Add("TimeTaken", (float)curTime);
+        qToSend.Add("response", resp);
 
         print("Question Number:" + questionNumber);
 
