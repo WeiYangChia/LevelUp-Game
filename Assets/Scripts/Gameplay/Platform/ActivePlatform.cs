@@ -30,6 +30,8 @@ public class ActivePlatform : MonoBehaviour
     // timereward give/don't give
     public bool prevCorrect = false;
 
+    public ZombieController ZC;
+
     /// <summary>
     /// Start is called before first frame update,
     /// to initialize certain settings and paramters (mainly for the arena)
@@ -53,6 +55,7 @@ public class ActivePlatform : MonoBehaviour
         // Players must be found at every frame, to avoid errors in cases where players leave mid game.
         // If a player ceases to exist, his blocks will no longer appear.
         player = GameObject.FindWithTag("Player");
+        ZC = gameObject.GetComponent<ZombieController>();
 
 
         // Updates blocks list if the previously assigned block has fallen/been destroyed. If not, it can be deactivated.
@@ -124,9 +127,11 @@ public class ActivePlatform : MonoBehaviour
 
         ABscript = block.transform.GetChild(0).gameObject.GetComponent<ActivatedBlock>();
         ABscript.colorIndex = player.GetComponent<PlayerController>().colorIndex;
+
         if (prevCorrect){
             ABscript.timeReward = true;
             prevCorrect = false;
+            ZC.summonZombie();
         }
 
         ABscript.enabled = true;

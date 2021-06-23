@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657838, g: 0.49641234, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -322,6 +322,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &7053005
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1429,6 +1431,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &64440441
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1683,6 +1687,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &69073657
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1911,6 +1917,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &86738140
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4207,6 +4215,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &321668900
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4646,6 +4656,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &354340409
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4933,6 +4945,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &384647688
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5295,6 +5309,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &399575566
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5835,6 +5851,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &423277909
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5987,6 +6005,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &431301390
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -6177,6 +6197,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &462511281
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -7344,6 +7366,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &526863497
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -7571,6 +7595,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &540557356
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -7723,6 +7749,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &545402741
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -8448,6 +8476,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &633258952
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -9703,6 +9733,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &746641777
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -9855,6 +9887,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &754394640
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -10103,6 +10137,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &760817924
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -10984,6 +11020,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &843019997
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -11489,6 +11527,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &898370493
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -12861,6 +12901,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &963176641
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -13507,6 +13549,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1026113299
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -13659,6 +13703,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1048087100
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -13925,6 +13971,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1055278851
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -14077,6 +14125,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1057377740
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -14606,6 +14656,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1106509729
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -14968,6 +15020,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1131446466
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -15195,6 +15249,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1150008046
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -15389,6 +15445,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1163759348
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -17118,6 +17176,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1341504444
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -17559,6 +17619,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1381608389
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -18174,6 +18236,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1414812059
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -18326,6 +18390,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1417335194
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -18478,6 +18544,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1417883513
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -19286,6 +19354,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1520690581
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -19856,6 +19926,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1545096460
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -20218,6 +20290,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1564541394
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -20599,6 +20673,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1586877121
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -20865,6 +20941,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1604554764
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -21200,6 +21278,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1629752782
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -21869,6 +21949,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1681489011
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -22156,6 +22238,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1691540870
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -22308,6 +22392,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1694175848
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -22482,6 +22568,7 @@ GameObject:
   - component: {fileID: 1697122655}
   - component: {fileID: 1697122657}
   - component: {fileID: 1697122656}
+  - component: {fileID: 1697122658}
   m_Layer: 8
   m_Name: ActiveBlocks
   m_TagString: Untagged
@@ -22593,10 +22680,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fe690004cdba492f90a31a6fdc78e6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cooldownAB: 10
   curNum: -1
   prevNum: -1
   player: {fileID: 0}
+  prevCorrect: 0
+  ZC: {fileID: 0}
+--- !u!114 &1697122658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1697122654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e0cf4de90c464242a0ecacf5aa23279, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zombieList: []
+  spawnPoint: {fileID: 1608176130}
 --- !u!1 &1711098957
 GameObject:
   m_ObjectHideFlags: 0
@@ -22700,6 +22802,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1711098963
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -23119,6 +23223,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1737417825
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -23500,6 +23606,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1772388458
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -23823,6 +23931,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1785940985
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -24071,6 +24181,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1828611650
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -24567,6 +24679,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1874933648
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -24719,6 +24833,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1880219120
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -24954,7 +25070,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 9
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -26214,6 +26330,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &1986899275
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -26879,6 +26997,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &2042863532
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -27106,6 +27226,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &2077087274
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -27258,6 +27380,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &2080987058
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -27889,6 +28013,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &2115825754
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -28041,6 +28167,8 @@ MonoBehaviour:
   blockActivated: 0
   colorIndex: 0
   timeReward: 0
+  correctDroppingBlock: 0
+  droppingBlock: 0
 --- !u!23 &2121565914
 MeshRenderer:
   m_ObjectHideFlags: 0
