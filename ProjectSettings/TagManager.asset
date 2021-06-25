@@ -19,6 +19,7 @@ TagManager:
   - GameOver
   - EmailLogin
   - timeReward
+  - Zombie
   layers:
   - Default
   - TransparentFX

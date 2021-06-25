@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Photon.Pun;
+using TMPro;
 
 /// <summary>
 /// This script processes all logic related to map selection of the host of the room
@@ -25,6 +25,9 @@ public class MapController : MonoBehaviour
     public static int Category;
     public static int Difficulty;
 
+    public TextMeshProUGUI catDisplay;
+    public TextMeshProUGUI diffDisplay;
+
     // Stores the UI panels
     public GameObject MapPanel;
     public GameObject RoomPanel;
@@ -36,17 +39,53 @@ public class MapController : MonoBehaviour
     public Image MapDisplay;
     public Image MapBorder;
 
-    private PhotonView PV;
-
     /// <summary>
     /// Start is called before the first frame update to initialise variables
     /// </summary>
     void Start()
     {
-        PV = GetComponent<PhotonView>();
         InitializeToggles();
 
         resetMap();
+    }
+
+    private void setCatDiffDisplay(){
+        string catName = "";
+        string diffName = "";
+
+        switch(Category){
+            case 0:
+                catName = "Category: Translation";
+                break;
+            case 1:
+                catName = "Category: Rotation";
+                break;
+            case 2:
+                catName = "Category: Texturing";
+                break;
+            case 3:
+                catName = "Category: Flipping";
+                break;
+            default:
+                break;
+        }
+
+        switch(Difficulty){
+            case 1:
+                diffName = "Difficulty: Easy";
+                break;
+            case 2:
+                diffName = "Difficulty: Medium";
+                break;
+            case 3:
+                diffName = "Difficulty: Hard";
+                break;
+            default:
+                break;
+        }
+
+        catDisplay.text = catName;
+        diffDisplay.text = diffName;
     }
 
     /// <summary>
@@ -56,6 +95,11 @@ public class MapController : MonoBehaviour
     /// </summary>
     private void Update()
     {
+        Category = LobbySetUp.LS.category;
+        Difficulty = LobbySetUp.LS.difficulty;
+
+        setCatDiffDisplay();
+
         if (mapSelected)
         {
             ConfirmMap.interactable = true;
@@ -138,25 +182,10 @@ public class MapController : MonoBehaviour
     {
         MapPanel.SetActive(false);
         RoomPanel.SetActive(true);
-        PV.RPC("setMapSettings", RpcTarget.All, mapIndex, CodeMatchmakingLobbyController.cat, CodeMatchmakingLobbyController.diff);
         LobbySetUp.LS.mapIndex = mapIndex; 
         displaySelectedMap();
     }
 
-    /// <summary>
-    /// This sets the map settings for other clients in the room as well.
-    /// PunRPC enables method-calls on remote clients in the same room.
-    /// </summary>
-    /// <param name="map"></param>
-    /// <param name="cat"></param>
-    /// <param name="diff"></param>
-    [PunRPC]
-    private void setMapSettings(int map, int cat, int diff)
-    {
-        mapIndex = map;
-        Category = cat;
-        Difficulty = diff;
-    }
 
     /// <summary>
     /// This loads the picture of the selected map and displays it

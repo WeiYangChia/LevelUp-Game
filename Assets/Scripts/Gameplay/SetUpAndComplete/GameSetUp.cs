@@ -61,8 +61,8 @@ public class GameSetUp : MonoBehaviour
     void Start()
     {
         // Activate correct map based on mapIndex
-        // mapIndex = MapController.mapIndex;
-        // ArenaCon.GetComponent<ArenaController>().setUpMap(mapIndex);
+        mapIndex = MapController.mapIndex;
+        ArenaCon.GetComponent<ArenaController>().setUpMap(mapIndex-1);
 
         // // select correct spawnpoints based on map chosen
         // Transform[] spawnPoints = null;
@@ -87,11 +87,9 @@ public class GameSetUp : MonoBehaviour
 
         // Initialize player avatar settings
 
-        // string curUserName = PhotonNetwork.LocalPlayer.NickName;
         string curUserName = "Tester";
 
-        // int avatarSelection = LobbySetUp.LS.playerList[curUserName];
-        int avatarSelection = 21;
+        int avatarSelection = LobbySetUp.LS.playerData;
 
         string avatarPath = "";
 

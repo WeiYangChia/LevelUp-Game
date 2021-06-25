@@ -77,6 +77,6 @@ public class CodeMatchmakingRoomController : MonoBehaviour
     /// </summary>
     public void CancelRoomOnClick()
     {
-        SceneManager.LoadScene("Main Menu");
+        SceneManager.LoadScene("CodeMatchmakingMenuDemo");
     }
 }

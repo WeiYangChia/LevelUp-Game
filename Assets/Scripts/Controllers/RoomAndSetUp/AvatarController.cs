@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 using System.Linq;
 using System;
-using Photon.Pun;
 using Proyecto26;
 using Newtonsoft.Json;
 using Photon.Realtime;
@@ -41,18 +40,9 @@ public class AvatarController : MonoBehaviour
 
     private List<Button> buttons = new List<Button>();
 
-    private Dictionary<int, bool> colorTaken = new Dictionary<int, bool>();
-
     // Control buttons
     public Button confirm;
     public Button customize;
-
-    //Store User (username) of p1-4 and Character selection
-
-    private int playerData;
-    
-    public int maxPlayers = -1;
-    private bool platformsInitialized = false;
 
 
     // Current User Info
@@ -62,15 +52,16 @@ public class AvatarController : MonoBehaviour
     private bool colorSelected = false;
     private bool charSelected = false;
 
-    public PhotonView PV;
+    // Main Room Avatar
+
+    public TextMeshProUGUI Name;
+    public Image mainAvatar;
 
     /// <summary>
     /// This function is called when the object becomes enabled and active.
     /// </summary>
     private void OnEnable()
     {
-        playerData = LobbySetUp.LS.playerData;
-
         InitializeButtons();
         InitializeToggles(600);
 
@@ -111,70 +102,20 @@ public class AvatarController : MonoBehaviour
     /// </summary>
     /// <param name="userName"></param>
     /// <param name="picIndex"></param>
-    [PunRPC]
-    public void updateAvatar(string userName, int picIndex)
+
+    public void updateAvatar()
     {
-        // Sets the previous color index chosen to be no longer taken
-        if (playerData != -1)
-        {
-            int oldColorIndex = playerData;
-            colorTaken[oldColorIndex] = false;
+        try{
+            Name.SetText(Login.currentUser.username);
         }
-        // Sets the avatar selected by the player
-        playerData = picIndex;
-
-        // Sets the current color index chosen to be taken
-        int colorIndex = picIndex % 10;
-        colorTaken[colorIndex] = true;
-
-        PV.RPC("updateTotalUI", RpcTarget.All);
+        catch(Exception e){
+            Name.SetText("Test Mode");
+        }
+        
+        displayAvatar(mainAvatar, curSelection);
+        LobbySetUp.LS.playerData = curSelection;
     }
 
-
-    /// <summary>
-    /// This function handles any state change to the room UI (When players join/leave the room)
-    /// PunRPC enables method-calls on remote clients in the same room.
-    /// </summary>
-    // [PunRPC]
-    // void updateTotalUI()
-    // {
-    //     int i = 0;
-    //     if (LobbySetUp.LS.CurrentNames.Count > 0)
-    //     {
-    //         // For every player in the player list, set their names and display their avatar
-    //         foreach (KeyValuePair<string, int> player in playerList)
-    //         {
-    //             // Set Name:
-    //             LobbySetUp.LS.CurrentNames[i].SetText(player.Key);
-
-    //             // Set Avatar:
-    //             displayAvatar(LobbySetUp.LS.CurrentAvatars[i], player.Value);
-
-    //             i++;
-    //         }
-    //         // For every subsequent slot (empty as no player yet), set their name to empty and delete their avatar
-    //         for (int j = i; j < LobbySetUp.LS.CurrentNames.Count; j++)
-    //         {
-    //             //Delete name
-    //             LobbySetUp.LS.CurrentNames[j].SetText("");
-
-    //             //Delete avatar
-    //             destroyAvatar(LobbySetUp.LS.CurrentAvatars[j]);
-    //         }
-    //     }
-    // }
-    
-    /// <summary>
-    /// Destroys the avatar by setting sprite to null and color to transparent
-    /// </summary>
-    /// <param name="avatar"></param>
-    void destroyAvatar(Image avatar)
-    {
-        avatar.sprite = null;
-        Color c = avatar.color;
-        c.a = 0;
-        avatar.color = c;
-    }
 
     /// <summary>
     /// Displays avatar based on the player's selection
@@ -223,32 +164,19 @@ public class AvatarController : MonoBehaviour
         // Brings the player to the avatar panel
         RoomPanel.SetActive(false);
         AvatarPanel.SetActive(true);
-
-        if (!selectionValid(curSelection))
-        {
-            updateAvailableColors();
-        }
     }
 
-    /// <summary>
-    /// Activated when the player confirms the character chosen
-    /// </summary>
-    // public void ConfirmCharacterOnClick()
-    // {
-    //     if (colorTaken[curSelection % 10] && ((curSelection % 10) != (playerList[Login.currentUser.username] % 10)))
-    //     {
-    //         updateAvailableColors();
-    //     }
-    //     else
-    //     {
-    //         // Brings the player back to the room panel
-    //         AvatarPanel.SetActive(false);
-    //         RoomPanel.SetActive(true);
+    // / <summary>
+    // / Activated when the player confirms the character chosen
+    // / </summary>
+    public void ConfirmCharacterOnClick()
+    {
+        AvatarPanel.SetActive(false);
+        RoomPanel.SetActive(true);
 
-    //         // Updates the avatar selected by the player for all clients in the room
-    //         PV.RPC("updateAvatar", RpcTarget.All, Login.currentUser.username, curSelection);
-    //     }
-    // }
+            // Updates the avatar selected by the player for all clients in the room
+        updateAvatar();
+    }
 
 
     /// <summary>
@@ -268,8 +196,6 @@ public class AvatarController : MonoBehaviour
             int index = i;
 
             buttons[i].onClick.AddListener(delegate { ColorClicked(index); });
-
-            colorTaken.Add((i+1), false);
         }
     }
 
@@ -326,24 +252,6 @@ public class AvatarController : MonoBehaviour
             char3.interactable = false;
         }
         
-    }
-
-    /// <summary>
-    /// Sets the colors that are available to be selected
-    /// </summary>
-    private void updateAvailableColors()
-    {
-        for (int i = 0; i < buttons.Count; i++)
-        {
-            if (colorTaken[i + 1] && ((curSelection % 10) != (i+1)))
-            {
-                buttons[i].interactable = false;
-            }
-            else
-            {
-                buttons[i].interactable = true;
-            }
-        }
     }
 
     /// <summary>
@@ -404,7 +312,10 @@ public class AvatarController : MonoBehaviour
         // When the player deselects a color
         else
         {
-            updateAvailableColors();
+            for (int i = 0; i < buttons.Count; i++)
+            {
+                buttons[i].interactable = true;
+            }
 
             curSelection -= (index + 1);
             colorSelected = false;

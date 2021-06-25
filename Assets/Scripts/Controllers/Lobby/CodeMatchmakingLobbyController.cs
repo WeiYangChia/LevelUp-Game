@@ -21,10 +21,6 @@ public class CodeMatchmakingLobbyController : MonoBehaviour
     [SerializeField]
     private GameObject RoomPanel;
 
-    // Code display
-    [SerializeField]
-    private TextMeshProUGUI codeDisplay;
-
     // Join/Create buttons
     [SerializeField]
     private Button Create;

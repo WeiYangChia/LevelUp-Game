@@ -20,7 +20,7 @@ public class ArenaController : MonoBehaviour
 
     public void setUpMap(int mapIndex)
     {
-        if (mapIndex<= maps.Length && mapIndex > 0)
+        if (mapIndex< maps.Length && mapIndex >= 0)
         {
             activeMapIndex = mapIndex;
         }
