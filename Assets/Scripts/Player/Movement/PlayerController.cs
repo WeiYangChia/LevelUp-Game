@@ -46,6 +46,7 @@ public class PlayerController : MonoBehaviour
     public ParticleSystem speedEffect;
     public ParticleSystem sizeEffect;
     public ParticleSystem jumpEffect;
+    public ParticleSystem eatenEffect;
 
     // Parameters for when the player is respawninig
 
@@ -85,6 +86,7 @@ public class PlayerController : MonoBehaviour
         speedEffect.Pause();
         sizeEffect.Pause();
         jumpEffect.Pause();
+        eatenEffect.Pause();
 
         controller = GetComponent<CharacterController>();
         anim = GetComponent<Animator>();
@@ -93,7 +95,7 @@ public class PlayerController : MonoBehaviour
         respawnPoint = transform.position;
         respawnThreshold = respawnPoint.y - 3;
 
-        StartCoroutine("Countdown",5);
+        StartCoroutine("Countdown",3);
     }
 
     void curPlayerSetup(string tag, int color, string name)
@@ -251,6 +253,7 @@ public class PlayerController : MonoBehaviour
     {
         moveable = true;
         respawning = false;
+        transform.position = respawnPoint;
         countdownPanel.SetActive(false);
     }
 
@@ -358,5 +361,45 @@ public class PlayerController : MonoBehaviour
     public int getPoints()
     {
         return points;
+    }
+
+    public void getEaten(){
+        StartCoroutine("Eaten",2);
+    }
+
+    IEnumerator Eaten(int counter)
+    {
+        eatenEffect.Play();
+
+        countdownPanel.SetActive(true);
+
+        countdown.SetText("Paralyzed for " + counter.ToString() + "s");
+        countdown.fontSize = 20;
+        countdownPanel.GetComponent<Image>().color = new Color(0.411f, 0.5137f, 0.384f, 0.396f);
+
+        while (counter > 0)
+        {
+            moveable = false;
+            yield return new WaitForSeconds(1);
+
+            counter--;
+
+            if (counter > 0)
+            {
+                countdown.SetText("Paralyzed for " + counter.ToString() + "s");
+            }
+            else
+            {
+                countdown.SetText("");
+                countdown.fontSize = 80;
+
+                countdownPanel.SetActive(false);
+
+                eatenEffect.Stop();
+                moveable = true;
+            }
+
+        }
+        
     }
 }
