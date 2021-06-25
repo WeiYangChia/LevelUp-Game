@@ -22,7 +22,13 @@ public class Record
         private set;
     }
 
-    public string playerName
+    public string playerid
+    {
+        get;
+        private set;
+    }
+
+    public string dob
     {
         get;
         private set;
@@ -53,13 +59,14 @@ public class Record
     }
 
     // Start is called before the first frame update
-    public Record(string datetime, int diff, int cat, string playerName, int points, int rank)
+    public Record(string datetime, int diff, int cat, string playerid, string dob, int points, int rank)
     {
         this.DateTime = datetime;
         this.Difficulty = diff;
         this.Category = cat;
 
-        this.playerName = playerName;
+        this.playerid = playerid;
+        this.dob = dob;
         this.Points = points;
         this.Rank = rank;
     }

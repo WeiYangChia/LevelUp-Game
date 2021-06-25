@@ -85,6 +85,7 @@ public class DoQuestion : MonoBehaviour
             deactivateUI();
             this.enabled = false;
         }
+        if (prev != null) { prev.Select(); };
     }
 
     /// <summary>
@@ -263,7 +264,7 @@ public class DoQuestion : MonoBehaviour
 
     void SubmitClick()
     {
-        prev.Select();
+        if (prev == null) { return; };
         int count = Array.IndexOf(buttons,prev);
         bool answer = (count == (int)question["Correct"]);
 

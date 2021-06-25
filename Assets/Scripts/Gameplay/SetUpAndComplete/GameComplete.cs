@@ -24,6 +24,7 @@ public class GameComplete : MonoBehaviour
     // tracks local player
     public static string localID;
     public static string localName;
+    public static string dob;
     // Information regarding all players
     private List<PlayerController> players = new List<PlayerController>();
     private List<Record> records = new List<Record>();
@@ -63,13 +64,21 @@ public class GameComplete : MonoBehaviour
         {
             localID = Login.localid;
             localName = Login.username;
+            dob = Login.dob;
         }
         catch (Exception e)
         {
             localID = "s0TESMzP9iaS4o0n4r30BIQJC3u2";
             localName = "uiyot";
+            dob = "January2021";
         }
 
+        if (localID==null || localName == null || dob == null)
+        {
+            localID = "s0TESMzP9iaS4o0n4r30BIQJC3u2";
+            localName = "uiyot";
+            dob = "January2021";
+        }
 
         // End Gameplay
         initializePlayers();
@@ -173,7 +182,8 @@ public class GameComplete : MonoBehaviour
             // Create record for players storing all game related information
             cur = new Record(dateTime,
                 QM.Difficulty, QM.Category,
-                rankedPlayers[i].GetComponent<PlayerController>().playerName,
+                localID,
+                dob,
                 rankedPlayers[i].GetComponent<PlayerController>().getPoints(),
                 rank);
 
@@ -212,7 +222,7 @@ public class GameComplete : MonoBehaviour
         if (localID == null) { localID = "s0TESMzP9iaS4o0n4r30BIQJC3u2"; };
         print("Uploading record");
         // Upload record
-        string urlRecord = "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Users/" + localID+"/Records.json";
+        string urlRecord = "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Records/" + localID+".json";
         print(JsonConvert.SerializeObject(record));
         RestClient.Post(url: urlRecord, JsonConvert.SerializeObject(record)).Then(onResolved: response => {
             print("Success");
@@ -260,13 +270,21 @@ public class GameComplete : MonoBehaviour
         RestClient.Get(url: urlRecord).Then(onResolved: response =>
         {
             print(response.Text);
-            Dictionary<string, int> Highscores = JsonConvert.DeserializeObject<Dictionary<string, int>>(response.Text);
-            if (cur.Points > Highscores[localName]) { Highscores[localName] = cur.Points; };
-            Dictionary<string, int> toSend = Highscores.OrderByDescending(pair => pair.Value).Take(10)
-               .ToDictionary(pair => pair.Key, pair => pair.Value);
+            Dictionary<string, Dictionary<string, int>> Highscores = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, int>>>(response.Text);
+            try
+            {
+                if (cur.Points > Highscores[localID][localName]) { Highscores[localID][localName] = cur.Points; };
+            }
+            catch
+            {
+                Highscores[localID][localName] = cur.Points;
+            }
+
+            var toSend =  Highscores.ToDictionary(x => x.Key, x => x.Value.OrderByDescending(y => y.Value).ToDictionary(y => y.Key, y => y.Value));
+            print(JsonConvert.SerializeObject(toSend));
             RestClient.Put(url: urlRecord, JsonConvert.SerializeObject(toSend));
             ResultsPage.GetComponent<HighscoreTable>().enabled = true;
-            ResultsPage.GetComponent<HighscoreTable>().endGameUpdateTable(Highscores);
+            ResultsPage.GetComponent<HighscoreTable>().endGameUpdateTable(toSend);
             ResultsPage.SetActive(true);
             
         }).Catch(error =>

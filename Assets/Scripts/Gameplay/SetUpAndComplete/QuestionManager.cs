@@ -30,6 +30,7 @@ public class QuestionManager : MonoBehaviour
     // Game status
     bool ended;
     bool newQ = true;
+    bool imageLoaded = false;
 
     // Responses and Questions:
     public Dictionary<string, int> responses = new Dictionary<string, int>();
@@ -38,6 +39,7 @@ public class QuestionManager : MonoBehaviour
     public List<MatrixReasoningQ> MRQ = new List<MatrixReasoningQ>();
     public Dictionary<string, object> MRQRecord = new Dictionary<string, object>();
     public Dictionary<string, object> chosen = new Dictionary<string, object>();
+    int imageNum = 0;
 
     //Phton View
     private PhotonView PV;
@@ -79,6 +81,14 @@ public class QuestionManager : MonoBehaviour
             print("get Question");
             question = getRandomQuestion();
             newQ = false;
+        }
+        if (imageNum == 5)
+        {
+            imageLoaded = true;
+        }
+        else
+        {
+            imageLoaded = false;
         }
     }
 
@@ -199,6 +209,7 @@ public class QuestionManager : MonoBehaviour
                     var temp = DownloadHandlerTexture.GetContent(www);
                     tempData.Add(i.ToString(), temp);
                     print("Image loaded for" + i.ToString());
+                    imageNum += 1;
                 }
             }
         }
@@ -223,6 +234,7 @@ public class QuestionManager : MonoBehaviour
                     var temp = DownloadHandlerTexture.GetContent(www);
                     tempData["question"] = temp;
                     print("question loaded");
+                    imageNum += 1;
                 }
             }
         }
@@ -252,7 +264,7 @@ public class QuestionManager : MonoBehaviour
 
         MRQRecord.Add(questionNumber.ToString(), qToSend);
         print(JsonConvert.SerializeObject(MRQRecord));
-
+        imageNum = 0;
     }
 
     /// <summary>
@@ -301,4 +313,8 @@ public class QuestionManager : MonoBehaviour
         return ended;
     }
 
+    public bool isImage()
+    {
+        return imageLoaded;
+    }
 }
