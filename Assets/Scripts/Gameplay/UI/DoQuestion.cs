@@ -85,6 +85,7 @@ public class DoQuestion : MonoBehaviour
             deactivateUI();
             this.enabled = false;
         }
+        if (prev != null) { prev.Select(); };
     }
 
     /// <summary>
@@ -263,12 +264,12 @@ public class DoQuestion : MonoBehaviour
 
     void SubmitClick()
     {
-        prev.Select();
+        if (prev == null) { return; };
         int count = Array.IndexOf(buttons,prev);
         bool answer = (count == (int)question["Correct"]);
 
         Dictionary<string, object> toSend = new Dictionary<string, object>();
-        string test = HMap.getMaps();
+        Dictionary<int, Dictionary<string, float>> test = HMap.getMaps();
 
         QM.recordResponse(question, count,test, answer, curTime);
         resetButtons();
@@ -319,7 +320,7 @@ public class DoQuestion : MonoBehaviour
 
     void Unanswered()
     {
-        string test = "";
+        Dictionary<int, Dictionary<string, float>> test = new Dictionary<int, Dictionary<string, float>>();
         QM.recordResponse(question, -1, test, false);
         resetButtons();
 

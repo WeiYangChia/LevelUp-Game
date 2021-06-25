@@ -23,7 +23,8 @@ public class GameComplete : MonoBehaviour
 
     // tracks local player
     public static string localID;
-
+    public static string localName;
+    public static string dob;
     // Information regarding all players
     private List<PlayerController> players = new List<PlayerController>();
     private List<Record> records = new List<Record>();
@@ -59,7 +60,25 @@ public class GameComplete : MonoBehaviour
     /// </summary>
     void Start()
     {
-        localID = Login.localid;
+        try
+        {
+            localID = Login.localid;
+            localName = Login.username;
+            dob = Login.dob;
+        }
+        catch (Exception e)
+        {
+            localID = "s0TESMzP9iaS4o0n4r30BIQJC3u2";
+            localName = "uiyot";
+            dob = "January2021";
+        }
+
+        if (localID==null || localName == null || dob == null)
+        {
+            localID = "s0TESMzP9iaS4o0n4r30BIQJC3u2";
+            localName = "uiyot";
+            dob = "January2021";
+        }
 
         // End Gameplay
         initializePlayers();
@@ -163,7 +182,8 @@ public class GameComplete : MonoBehaviour
             // Create record for players storing all game related information
             cur = new Record(dateTime,
                 QM.Difficulty, QM.Category,
-                rankedPlayers[i].GetComponent<PlayerController>().playerName,
+                localID,
+                dob,
                 rankedPlayers[i].GetComponent<PlayerController>().getPoints(),
                 rank);
 
@@ -171,7 +191,7 @@ public class GameComplete : MonoBehaviour
             print(cur);
             Dictionary<string, object> mrqStuff = QM.getMRQ();
 
-            cur.attachResponses(QM.getResponses(), mrqStuff);
+            cur.attachResponses(mrqStuff);
             print(JsonConvert.SerializeObject(mrqStuff));
             uploadRecord(cur, rank);
             // If the current player is the local player, upload record (with player responses) to database.
@@ -182,7 +202,7 @@ public class GameComplete : MonoBehaviour
 
             //    uploadRecord(cur, rank);
             //}
-
+            uploadScore(cur.Points);
             prevPoints = rankedPlayers[i].GetComponent<PlayerController>().getPoints();
             tie = false;
         }
@@ -199,12 +219,10 @@ public class GameComplete : MonoBehaviour
     void uploadRecord(Record record, int rank)
     {
 
-        string localID = "s0TESMzP9iaS4o0n4r30BIQJC3u2";
-        User user = new User("uiyot", localID);
-
+        if (localID == null) { localID = "s0TESMzP9iaS4o0n4r30BIQJC3u2"; };
         print("Uploading record");
         // Upload record
-        string urlRecord = "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Users/" + localID+"/Records.json";
+        string urlRecord = "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Records/" + localID+".json";
         print(JsonConvert.SerializeObject(record));
         RestClient.Post(url: urlRecord, JsonConvert.SerializeObject(record)).Then(onResolved: response => {
             print("Success");
@@ -215,68 +233,27 @@ public class GameComplete : MonoBehaviour
         // Calculate achievement points to be awarded based on rank
         int pointsAwarded = 0;
         //rankDisplay.text = (rank).ToString();
-        switch (rank)
-        {
-            case 1:
-                pointsAwarded = 10;
-                break;
-            case 2:
-                pointsAwarded = 7;
-                break;
-            case 3:
-                pointsAwarded = 4;
-                break;
-            case 4:
-                pointsAwarded = 1;
-                break;
-        }
+        
         pointsAwarded *= QM.Difficulty;
 
-        updateAchievementPoints(pointsAwarded);
+        //updateAchievementPoints(pointsAwarded);
 
     }
 
-    /// <summary>
-    /// This function is called to update the local player's achievement points based on rank, in the database
-    /// It also allows the UI to display the achievement points progress of the player
-    /// </summary>
-    /// <param name="achievementPoints"></param>
-
-    void updateAchievementPoints(int achievementPoints)
+    void uploadScore(int amt)
     {
-        Achievement playerinfo = new Achievement();
-        string playerurl = "https://quizguyz.firebaseio.com/Users/" + localID;
-        RestClient.Get(url: playerurl + ".json").Then(onResolved: response =>
+        string urlRecord = "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Users/" + localID + "/Total_Points.json";
+
+        RestClient.Get(url: urlRecord).Then(onResolved: response =>
         {
-            pointInc.text = "+" + achievementPoints.ToString();
-
-            //Get
-            playerinfo = JsonConvert.DeserializeObject<Achievement>(response.Text);
-            prevPoints.text = playerinfo.achievementPoints.ToString();
-            prevBar.GetComponent<Image>().fillAmount = ((float)playerinfo.achievementPoints / 750);
-
-            //Update
-            playerinfo.achievementPoints = playerinfo.achievementPoints + achievementPoints;
-            afterPoints.text = playerinfo.achievementPoints.ToString();
-            afterBar.GetComponent<Image>().fillAmount = ((float)playerinfo.achievementPoints / 750);
-
-            //Upload
-            //RestClient.Put(url: playerurl + "/achievementPoints.json", JsonConvert.SerializeObject(playerinfo.achievementPoints));
-
-            if (playerinfo.achievementPoints >= 250)
-            {
-                Bronze.SetActive(true);
-            }
-            if (playerinfo.achievementPoints >= 500)
-            {
-                Silver.SetActive(true);
-            }
-            if (playerinfo.achievementPoints >= 750)
-            {
-                Gold.SetActive(true);
-            }
+            int totalPoints = JsonConvert.DeserializeObject<int>(response.Text);
+            totalPoints += amt;
+            RestClient.Put(url: urlRecord, JsonConvert.SerializeObject(totalPoints)).Then(onResolved: response => {
+                print("Success");
+            }).Catch(error => {
+                print("Failed");
+            });
         });
-        
     }
 
     /// <summary>
@@ -287,16 +264,27 @@ public class GameComplete : MonoBehaviour
     {
         string urlRecord = "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Highscore.json";
         highscoreDisplayUpdated = true;
+
+        if (localName == null) { localName = "uiyot"; };
+
         RestClient.Get(url: urlRecord).Then(onResolved: response =>
         {
             print(response.Text);
-            Dictionary<string, int> Highscores = JsonConvert.DeserializeObject<Dictionary<string, int>>(response.Text);
-            Highscores["uiyot"] = cur.Points;
-            Dictionary<string, int> toSend = Highscores.OrderByDescending(pair => pair.Value).Take(10)
-               .ToDictionary(pair => pair.Key, pair => pair.Value);
+            Dictionary<string, Dictionary<string, int>> Highscores = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, int>>>(response.Text);
+            try
+            {
+                if (cur.Points > Highscores[localID][localName]) { Highscores[localID][localName] = cur.Points; };
+            }
+            catch
+            {
+                Highscores[localID][localName] = cur.Points;
+            }
+
+            var toSend =  Highscores.ToDictionary(x => x.Key, x => x.Value.OrderByDescending(y => y.Value).ToDictionary(y => y.Key, y => y.Value));
+            print(JsonConvert.SerializeObject(toSend));
             RestClient.Put(url: urlRecord, JsonConvert.SerializeObject(toSend));
             ResultsPage.GetComponent<HighscoreTable>().enabled = true;
-            ResultsPage.GetComponent<HighscoreTable>().endGameUpdateTable(Highscores);
+            ResultsPage.GetComponent<HighscoreTable>().endGameUpdateTable(toSend);
             ResultsPage.SetActive(true);
             
         }).Catch(error =>
