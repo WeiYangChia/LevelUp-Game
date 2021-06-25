@@ -22577,22 +22577,6 @@ MonoBehaviour:
   activeMaterial4: {fileID: 2100000, guid: 95c5b6f7709144c9194892a9e89b1f3c, type: 2}
   activeMaterial5: {fileID: 2100000, guid: 900994662dc234da4968d1f5b75442fa, type: 2}
   activeMaterial6: {fileID: 2100000, guid: 8890ea9c63bd347619c7d4f779902529, type: 2}
---- !u!114 &1697122657
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1697122654}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3fe690004cdba492f90a31a6fdc78e6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  curNum: -1
-  prevNum: -1
-  player: {fileID: 0}
-  prevCorrect: 0
   ZC: {fileID: 0}
 --- !u!114 &1697122658
 MonoBehaviour:

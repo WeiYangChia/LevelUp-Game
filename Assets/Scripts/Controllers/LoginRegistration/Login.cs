@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEditor;
 using Newtonsoft.Json;
+using System;
 
 public class Login : MonoBehaviour
 {
@@ -15,25 +16,28 @@ public class Login : MonoBehaviour
     private string databaseURL = "https://test-ebe23.firebaseio.com/Users/";
     public static string localid;
     public string idToken;
-    public string username = null;
+    public static string username = null;
     public bool? success = null;
     public bool usernameGet = false; 
     public bool displayFail = false;
     public bool? signUpSuccess = null;
     public static User currentUser;
-
+    public static string dob = null;
     
     public TMP_InputField signInEmail;
     public TMP_InputField signInPassword;
     public TMP_InputField signUpEmail;
     public TMP_InputField signUpUsername;
     public TMP_InputField signUpPassword;
-    
+    public TMPro.TMP_Dropdown Month;
+    public TMPro.TMP_Dropdown Year;
+
+
     public TextMeshProUGUI failLogin;
 
     private void Start()
     {
-        
+
     }
     private void Update()
     {
@@ -86,7 +90,12 @@ public class Login : MonoBehaviour
 
     public void signUpButton()
     {
-        SignUpUser(signUpEmail.text, signUpUsername.text, signUpPassword.text);
+        if (signUpEmail.text != "" && signUpUsername.text != "" && signUpPassword.text != "")
+        {
+            dob = Month.options[Month.value].text + Year.options[Year.value].text;
+            print(dob);
+            SignUpUser(signUpEmail.text, signUpUsername.text, signUpPassword.text);
+        }
     }
 
 
@@ -98,7 +107,7 @@ public class Login : MonoBehaviour
 
     private void PostToDatabase()
     {
-        User user = new User(username, localid);
+        User user = new User(username, dob, 0);
         RestClient.Put(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Users/" + localid + ".json", user).Then(onResolved:response => {
             currentUser = user;
             loadScene();
@@ -128,7 +137,9 @@ public class Login : MonoBehaviour
         {
             User user = JsonConvert.DeserializeObject<User>(response.Text);
             username = user.username;
-            currentUser = new User(username, localid);
+            dob = user.dob;
+            int totalPoints = user.Total_Points;
+            currentUser = new User(username, dob, totalPoints);
             usernameGet = true;
         });     
     }

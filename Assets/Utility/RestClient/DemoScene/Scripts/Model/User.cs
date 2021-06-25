@@ -8,15 +8,18 @@ public class User
 
     public Record record;
 
-    public string localid;
+    public string dob;
+
+    public int Total_Points;
 
 	public override string ToString(){
 		return UnityEngine.JsonUtility.ToJson (this, true);
 	}
 
-    public User(string name,  string localid)
+    public User(string name,  string dob, int Total_Points)
     {
         this.username = name;
-        this.localid = localid;
+        this.dob = dob;
+        this.Total_Points = 0;
     }
 }
