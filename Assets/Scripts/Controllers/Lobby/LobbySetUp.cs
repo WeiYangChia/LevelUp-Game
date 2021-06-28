@@ -16,7 +16,7 @@ public class LobbySetUp : MonoBehaviour
 
     // Category and difficulty variables
     public int category;
-    public int difficulty;
+    public int catLevel;
 
     // Map index
     public int mapIndex;

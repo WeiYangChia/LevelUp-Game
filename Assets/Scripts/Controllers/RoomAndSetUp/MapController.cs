@@ -21,12 +21,12 @@ public class MapController : MonoBehaviour
     private bool mapSelected = false;
     public static int mapIndex = -1;
 
-    // Variables storing the category and difficulty of the room
-    public static int Category;
-    public static int Difficulty;
+    // Variables storing the category and level of the room
+    public static int category;
+    public static int catLevel;
 
     public TextMeshProUGUI catDisplay;
-    public TextMeshProUGUI diffDisplay;
+    public TextMeshProUGUI catLevelDisplay;
 
     // Stores the UI panels
     public GameObject MapPanel;
@@ -49,11 +49,11 @@ public class MapController : MonoBehaviour
         resetMap();
     }
 
-    private void setCatDiffDisplay(){
+    private void setDisplay(){
         string catName = "";
-        string diffName = "";
+        string catLevelName = "";
 
-        switch(Category){
+        switch(category){
             case 0:
                 catName = "Category: Translation";
                 break;
@@ -70,22 +70,10 @@ public class MapController : MonoBehaviour
                 break;
         }
 
-        switch(Difficulty){
-            case 1:
-                diffName = "Difficulty: Easy";
-                break;
-            case 2:
-                diffName = "Difficulty: Medium";
-                break;
-            case 3:
-                diffName = "Difficulty: Hard";
-                break;
-            default:
-                break;
-        }
+        catLevelName = "Level: " + catLevel.ToString();
 
         catDisplay.text = catName;
-        diffDisplay.text = diffName;
+        catLevelDisplay.text = catLevelName;
     }
 
     /// <summary>
@@ -95,10 +83,10 @@ public class MapController : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        Category = LobbySetUp.LS.category;
-        Difficulty = LobbySetUp.LS.difficulty;
+        category = LobbySetUp.LS.category;
+        catLevel = LobbySetUp.LS.catLevel;
 
-        setCatDiffDisplay();
+        setDisplay();
 
         if (mapSelected)
         {

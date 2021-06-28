@@ -1,8 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System.Collections.Generic;
+using System;
 using UnityEngine.SceneManagement;
+
 
 /// <summary>
 /// This script processes all logic related to the lobby.
@@ -31,18 +34,18 @@ public class CodeMatchmakingLobbyController : MonoBehaviour
     public Button texturing;
     public Button flipping;
 
+    private List<int> levels = new List<int>();
+
+    private List<TextMeshProUGUI> levels_UI = new List<TextMeshProUGUI>();
+    
+    public TextMeshProUGUI translation_level_UI;
+    public TextMeshProUGUI rotation_level_UI;
+    public TextMeshProUGUI texturing_level_UI;
+    public TextMeshProUGUI flipping_level_UI;
+
     private List<Button> buttonsCat = new List<Button>();
     private bool catChosen = false;
     public static int cat;
-
-    // Difficulty buttons
-    public Button easy;
-    public Button medium;
-    public Button hard;
-
-    private List<Button> buttonsDiff = new List<Button>();
-    private bool diffChosen = false;
-    public static int diff;
 
     // Error message text
     [SerializeField]
@@ -60,6 +63,8 @@ public class CodeMatchmakingLobbyController : MonoBehaviour
     {
         LobbyPanel.SetActive(true);
         InitializeButtons();
+
+        InitializePlayerLevels();
     }
 
     /// <summary>
@@ -69,9 +74,9 @@ public class CodeMatchmakingLobbyController : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        // If category and difficulty is chosen and a valid room size is entered,
+        // If category is chosen and a valid room size is entered,
         // set create button to interactable so it can be clicked
-        if (catChosen && diffChosen)
+        if (catChosen)
         {
             Create.interactable = true;
         }
@@ -89,7 +94,7 @@ public class CodeMatchmakingLobbyController : MonoBehaviour
     }
 
     /// <summary>
-    /// Initialise the Difficulty and Category buttons in the Create/Join Room screen
+    /// Initialise the Category buttons in the Create/Join Room screen
     /// </summary>
     private void InitializeButtons()
     {
@@ -104,16 +109,28 @@ public class CodeMatchmakingLobbyController : MonoBehaviour
             print(index);
             buttonsCat[i].onClick.AddListener(delegate { CatClicked(index); });
         }
+    }
 
-        buttonsDiff.Add(easy);
-        buttonsDiff.Add(medium);
-        buttonsDiff.Add(hard);
+    private void InitializePlayerLevels(){
+        // Get player information from DB
 
+        int translation_level = 1;
+        int rotation_level = 3;
+        int texturing_level = 2;
+        int flipping_level = 5;
 
-        for (int i = 0; i < buttonsDiff.Count; i++)
-        {
-            int index = i;
-            buttonsDiff[i].onClick.AddListener(delegate { DiffClicked(index); });
+        levels.Add(translation_level);
+        levels.Add(rotation_level);
+        levels.Add(texturing_level);
+        levels.Add(flipping_level);
+
+        levels_UI.Add(translation_level_UI);
+        levels_UI.Add(rotation_level_UI);
+        levels_UI.Add(texturing_level_UI);
+        levels_UI.Add(flipping_level_UI);
+
+        for (int i = 0; i < levels.Count; i++){
+            levels_UI[i].text = "Level " + levels[i].ToString();
         }
     }
 
@@ -136,6 +153,8 @@ public class CodeMatchmakingLobbyController : MonoBehaviour
             }
             cat = index;
             catChosen = true;
+
+            LobbySetUp.LS.catLevel = levels[cat];
         }
 
         else
@@ -150,42 +169,8 @@ public class CodeMatchmakingLobbyController : MonoBehaviour
             cat = -1;
             catChosen = false;
         }
+        
         LobbySetUp.LS.category = cat;
-    }
-
-    /// <summary>
-    /// When a difficuly is selected, the other difficulty levels cannot be selected.
-    /// To select another difficulty level, the player must click on the current one to deselect it first.
-    /// </summary>
-    /// <param name="index"></param>
-    void DiffClicked(int index)
-    {
-        if (!diffChosen)
-        {
-            for (int i = 0; i < buttonsDiff.Count; i++)
-            {
-                if (i != index)
-                {
-                    buttonsDiff[i].interactable = false;
-                }
-            }
-            diff = index + 1;
-            diffChosen = true;
-        }
-
-        else
-        {
-            for (int i = 0; i < buttonsDiff.Count; i++)
-            {
-                if (i != index)
-                {
-                    buttonsDiff[i].interactable = true;
-                }
-            }
-            diff = -1;
-            diffChosen = false;
-        }
-        LobbySetUp.LS.difficulty = diff;
     }
 
     public void goToRoom(){
