@@ -27,11 +27,11 @@ public class qImage
 [Serializable]
 public class difficulty
 {
-    public qImage Distractor1 { get; set; }
-    public qImage Distractor2 { get; set; }
-    public qImage Distractor3 { get; set; }
+    public string Distractor1 { get; set; }
+    public string Distractor2 { get; set; }
+    public string Distractor3 { get; set; }
 
-    public difficulty(qImage Distractor1, qImage Distractor2, qImage Distractor3)
+    public difficulty(string Distractor1, string Distractor2, string Distractor3)
     {
         this.Distractor1 = Distractor1;
         this.Distractor2 = Distractor2;
@@ -42,17 +42,21 @@ public class difficulty
 [Serializable]
 public class MatrixReasoningQ
 {
-    public qImage Correct { get; set; }
+    public string Correct { get; set; }
     public string ID { get; set; }
-    public qImage Question { get; set; }
+    public string Question { get; set; }
     public difficulty diff1 { get; set; }
+    public difficulty diff2 { get; set; }
+    public difficulty diff3 { get; set; }
 
-    public MatrixReasoningQ(qImage Correct, string ID, qImage Question, difficulty diff1)
+    public MatrixReasoningQ(string Correct, string ID, string Question, difficulty diff1, difficulty diff2, difficulty diff3)
     {
         this.Correct = Correct;
         this.ID = ID;
         this.Question = Question;
         this.diff1 = diff1;
+        this.diff2 = diff2;
+        this.diff3 = diff3;
     }
 }
 
