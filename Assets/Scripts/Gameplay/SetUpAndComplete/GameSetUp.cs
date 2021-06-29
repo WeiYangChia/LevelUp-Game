@@ -61,8 +61,15 @@ public class GameSetUp : MonoBehaviour
     void Start()
     {
         // Activate correct map based on mapIndex
-        mapIndex = MapController.mapIndex;
-        ArenaCon.GetComponent<ArenaController>().setUpMap(mapIndex-1);
+
+        try{
+            mapIndex = MapController.mapIndex;
+            ArenaCon.GetComponent<ArenaController>().setUpMap(mapIndex-1);
+        }
+        catch (Exception e){
+            print("In Tutorial");
+        }
+        
 
         // // select correct spawnpoints based on map chosen
         // Transform[] spawnPoints = null;
@@ -89,7 +96,14 @@ public class GameSetUp : MonoBehaviour
 
         string curUserName = "Tester";
 
-        int avatarSelection = LobbySetUp.LS.playerData;
+        int avatarSelection = 21;
+
+        try{
+            avatarSelection = LobbySetUp.LS.playerData;
+        }
+        catch (Exception e){
+            avatarSelection = 21;
+        }
 
         string avatarPath = "";
 
