@@ -97,7 +97,7 @@ public class QuestionManager : MonoBehaviour
         
         int choice;
         questionNumber = 0;
-        while (choices.Count< 15)
+        while (choices.Count< 25)
         {
             choice = UnityEngine.Random.Range(0, questions.Count - 1);
             if (!choices.Contains(questions[choice]))
@@ -179,12 +179,13 @@ public class QuestionManager : MonoBehaviour
             finalOpt.Add(tempOpt[numbers[tempNum]]);
             numbers.Remove(numbers[tempNum]);
         }
-        if (questionNumber >= 15)
+        questionNumber++;
+        if (questionNumber >= 24)
         {
             randomQuestions();
         }
         chosen.Add("OptionPlacement", finalOpt);
-        questionNumber++;
+        
         print(JsonConvert.SerializeObject(chosen));
         return chosen;
     }
