@@ -63,7 +63,7 @@ public class QuestionManager : MonoBehaviour
         Difficulty = 1;
         ended = false;
 
-        RestClient.Get(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/QuestionList/Matrix Reasoning.json").Then(onResolved: response =>
+        RestClient.Get(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Question/Matrix Reasoning/FL/LO1.json").Then(onResolved: response =>
         {
             print("Loaded");
             print(response.Text);
@@ -103,8 +103,9 @@ public class QuestionManager : MonoBehaviour
             if (!choices.Contains(questions[choice]))
             {
                 print(questions[choice]);
-                RestClient.Get(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Question/Matrix Reasoning/" + questions[choice]+".json").Then(onResolved: response =>
+                RestClient.Get(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/QuestionList/Matrix Reasoning/FL/LO1/" + questions[choice]+".json").Then(onResolved: response =>
                 {
+                    print("Question Hooked");
                     MatrixReasoningQ temp = JsonConvert.DeserializeObject<MatrixReasoningQ>(response.Text);
                     MRQ.Add(temp);
                     LS.moveSlider();
@@ -129,7 +130,6 @@ public class QuestionManager : MonoBehaviour
 
     public Dictionary<string, object> getRandomQuestion()
     {
-        string url = "https://drive.google.com/uc?export=download&id=";
         List<string> tempOpt = new List<string>();
         List<string> finalLoc = new List<string>();
         List<string> finalOpt = new List<string>();
@@ -148,18 +148,17 @@ public class QuestionManager : MonoBehaviour
         MatrixReasoningQ tempMRQ = MRQ[temp];
         print(tempMRQ.ID);
 
-        tempOpt.Add(tempMRQ.Correct.Name);
-        tempOpt.Add(tempMRQ.diff1.Distractor1.Name);
-        tempOpt.Add(tempMRQ.diff1.Distractor2.Name);
-        tempOpt.Add(tempMRQ.diff1.Distractor3.Name);
+        tempOpt.Add(tempMRQ.Correct);
+        tempOpt.Add(tempMRQ.diff1.Distractor1);
+        tempOpt.Add(tempMRQ.diff1.Distractor2);
+        tempOpt.Add(tempMRQ.diff1.Distractor3);
 
         
         chosen.Add("ID", tempMRQ.ID);
         chosen.Add("bonusTimeLimit"  ,getBonusTimeLimit());
         chosen.Add("maxTime", getMaxTime());
-        chosen.Add("questionloc", url + tempMRQ.Question.Loc);
 
-        StartCoroutine(DownloadQImage((string)tempMRQ.Question.Name, chosen));
+        StartCoroutine(DownloadQImage((string)tempMRQ.Question, chosen));
 
         int tempNum;
         List<int> numbers = new List<int>();
@@ -175,6 +174,7 @@ public class QuestionManager : MonoBehaviour
             {
                 chosen.Add("Correct", i);
             }
+            print(tempOpt[numbers[tempNum]]);
             StartCoroutine(DownloadOptionImage(tempOpt[numbers[tempNum]], i, chosen));
             finalOpt.Add(tempOpt[numbers[tempNum]]);
             numbers.Remove(numbers[tempNum]);
@@ -192,6 +192,7 @@ public class QuestionManager : MonoBehaviour
     IEnumerator DownloadOptionImage(string OptionImage, int i, Dictionary<string, object> tempData)
     {
         var fileUrl = "https://firebasestorage.googleapis.com/v0/b/test-ebe23.appspot.com/o/Matrix_Reasoning%2F" + OptionImage + ".png?alt=media";
+        print(OptionImage);
 
         using (var www = UnityWebRequestTexture.GetTexture(fileUrl))
         {
