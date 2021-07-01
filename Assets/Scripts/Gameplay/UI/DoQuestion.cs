@@ -37,6 +37,7 @@ public class DoQuestion : MonoBehaviour
     private Button prev;
 
     // Question Parameters:
+    public Slider difVal;
     private Dictionary<string, object> question;
 
     
@@ -268,11 +269,24 @@ public class DoQuestion : MonoBehaviour
         int count = Array.IndexOf(buttons,prev);
         bool answer = (count == (int)question["Correct"]);
 
+        print(difVal);
+
+        if (answer)
+        {
+            difVal.value += 1;
+        }
+        else
+        {
+            difVal.value -= 1;
+        }
+
         Dictionary<string, object> toSend = new Dictionary<string, object>();
         Dictionary<int, Dictionary<string, float>> test = HMap.getMaps();
 
         QM.recordResponse(question, count,test, answer, curTime);
         resetButtons();
+
+        
 
         if (pointsAwardable)
         {

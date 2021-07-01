@@ -8,6 +8,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Photon.Pun;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 /// <summary>
 /// The QuestionManager script is used to fetch the question bank from the database based on the category and difficulty selected.
@@ -17,6 +18,7 @@ using UnityEngine.Networking;
 
 public class QuestionManager : MonoBehaviour
 {
+    public Slider difVal;
     // Singleton
     public static QuestionManager QM;
     public Loading_Screen LS;
@@ -40,6 +42,7 @@ public class QuestionManager : MonoBehaviour
     public Dictionary<string, object> MRQRecord = new Dictionary<string, object>();
     public Dictionary<string, object> chosen = new Dictionary<string, object>();
     int imageNum = 0;
+    public List<string> difLevels = new List<string>();
 
     //Phton View
     private PhotonView PV;
@@ -149,9 +152,26 @@ public class QuestionManager : MonoBehaviour
         print(tempMRQ.ID);
 
         tempOpt.Add(tempMRQ.Correct);
-        tempOpt.Add(tempMRQ.diff1.Distractor1);
-        tempOpt.Add(tempMRQ.diff1.Distractor2);
-        tempOpt.Add(tempMRQ.diff1.Distractor3);
+        
+        switch (Mathf.Floor(difVal.value / 3))
+        {
+            case 0:
+                tempOpt.Add(tempMRQ.diff3.Distractor1);
+                tempOpt.Add(tempMRQ.diff3.Distractor2);
+                tempOpt.Add(tempMRQ.diff3.Distractor3);
+                break;
+            case 1:
+                tempOpt.Add(tempMRQ.diff2.Distractor1);
+                tempOpt.Add(tempMRQ.diff2.Distractor2);
+                tempOpt.Add(tempMRQ.diff2.Distractor3);
+                break;
+            case 2:
+                tempOpt.Add(tempMRQ.diff1.Distractor1);
+                tempOpt.Add(tempMRQ.diff1.Distractor2);
+                tempOpt.Add(tempMRQ.diff1.Distractor3);
+                break;
+        }
+        
 
         
         chosen.Add("ID", tempMRQ.ID);
