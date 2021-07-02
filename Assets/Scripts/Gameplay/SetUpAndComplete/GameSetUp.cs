@@ -21,6 +21,7 @@ public class GameSetUp : MonoBehaviour
     public GameObject ArenaCon;
     public int mapIndex;
     public int Category;
+    public int catLevel;
     public int Difficulty;
 
     // Spawn points for each player
@@ -100,9 +101,13 @@ public class GameSetUp : MonoBehaviour
 
         try{
             avatarSelection = LobbySetUp.LS.playerData;
+            Category = LobbySetUp.LS.category;
+            catLevel = LobbySetUp.LS.catLevel;
         }
         catch (Exception e){
             avatarSelection = 21;
+            Category = 0;
+            catLevel = 1;
         }
 
         string avatarPath = "";

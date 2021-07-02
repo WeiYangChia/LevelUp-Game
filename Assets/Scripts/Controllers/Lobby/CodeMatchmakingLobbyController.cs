@@ -114,15 +114,17 @@ public class CodeMatchmakingLobbyController : MonoBehaviour
     private void InitializePlayerLevels(){
         // Get player information from DB
 
+
+
         int translation_level = 1;
         int rotation_level = 3;
         int texturing_level = 2;
         int flipping_level = 5;
 
-        levels.Add(translation_level);
-        levels.Add(rotation_level);
-        levels.Add(texturing_level);
-        levels.Add(flipping_level);
+        levels.Add(Login.currentUser.diff.TR + 1);
+        levels.Add(Login.currentUser.diff.RT + 1);
+        levels.Add(Login.currentUser.diff.TX + 1);
+        levels.Add(Login.currentUser.diff.FL + 1);
 
         levels_UI.Add(translation_level_UI);
         levels_UI.Add(rotation_level_UI);

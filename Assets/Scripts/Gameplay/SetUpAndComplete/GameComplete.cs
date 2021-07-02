@@ -181,7 +181,7 @@ public class GameComplete : MonoBehaviour
 
             // Create record for players storing all game related information
             cur = new Record(dateTime,
-                QM.Difficulty, QM.Category,
+                QM.catLevel, QM.Category,
                 localID,
                 dob,
                 rankedPlayers[i].GetComponent<PlayerController>().getPoints(),
@@ -234,7 +234,7 @@ public class GameComplete : MonoBehaviour
         int pointsAwarded = 0;
         //rankDisplay.text = (rank).ToString();
         
-        pointsAwarded *= QM.Difficulty;
+        pointsAwarded *= QM.catLevel;
 
         //updateAchievementPoints(pointsAwarded);
 

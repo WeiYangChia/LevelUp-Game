@@ -8,6 +8,8 @@ using System.Linq;
 using Newtonsoft.Json;
 using Photon.Pun;
 using UnityEngine.Networking;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// The QuestionManager script is used to fetch the question bank from the database based on the category and difficulty selected.
@@ -19,11 +21,14 @@ public class QuestionManager : MonoBehaviour
 {
     // Singleton
     public static QuestionManager QM;
+    public static GameSetUp GS;
+    public DoQuestion DQ;
     public Loading_Screen LS;
+    public Slider dL;
 
     // Question parameters
     public int Category;
-    public int Difficulty;
+    public int catLevel;
     public int questionNumber;
     public Dictionary<string, object> question;
 
@@ -40,6 +45,8 @@ public class QuestionManager : MonoBehaviour
     public Dictionary<string, object> MRQRecord = new Dictionary<string, object>();
     public Dictionary<string, object> chosen = new Dictionary<string, object>();
     int imageNum = 0;
+    public List<string> difLevels = new List<string>();
+    public string[] catList = { "TR" ,"RT","TX","FL"};
 
     //Phton View
     private PhotonView PV;
@@ -56,14 +63,25 @@ public class QuestionManager : MonoBehaviour
     {
         LS = LS.GetComponent<Loading_Screen>();
         LS.percentageValues(16);
+        print(DQ);
         // Initialize settings:
         // Category = MapController.Category;
         // Difficulty = MapController.Difficulty;
-        Category = 0;
-        Difficulty = 1;
+        try
+        {
+            GS = GS.GetComponent<GameSetUp>();
+            Category = LobbySetUp.LS.category;
+            catLevel = LobbySetUp.LS.catLevel;
+        }
+        catch (Exception e)
+        {
+            Category = 0;
+            catLevel = 1;
+        }
+
         ended = false;
 
-        RestClient.Get(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Question/Matrix Reasoning/FL/LO1.json").Then(onResolved: response =>
+        RestClient.Get(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Question/Matrix Reasoning/"+ catList[Category]+"/LO1"+".json").Then(onResolved: response =>
         {
             print("Loaded");
             print(response.Text);
@@ -74,17 +92,20 @@ public class QuestionManager : MonoBehaviour
         });
     }
 
+
     void Update()
     {
-        if (newQ && (MRQ.Count > 14))
+        if (newQ && (MRQ.Count > 19))
         {
+            newQ = false;
             print("get Question");
             question = getRandomQuestion();
-            newQ = false;
+            
         }
         if (imageNum == 5)
         {
             imageLoaded = true;
+            
         }
         else
         {
@@ -103,7 +124,7 @@ public class QuestionManager : MonoBehaviour
             if (!choices.Contains(questions[choice]))
             {
                 print(questions[choice]);
-                RestClient.Get(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/QuestionList/Matrix Reasoning/FL/LO1/" + questions[choice]+".json").Then(onResolved: response =>
+                RestClient.Get(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/QuestionList/Matrix Reasoning/" + catList[Category] + "/LO1/" + questions[choice]+".json").Then(onResolved: response =>
                 {
                     print("Question Hooked");
                     MatrixReasoningQ temp = JsonConvert.DeserializeObject<MatrixReasoningQ>(response.Text);
@@ -137,10 +158,10 @@ public class QuestionManager : MonoBehaviour
 
 
         // Unlikely scenario: Player has answered all questions in the question bank
-        if (responses.Count == questions.Count)
-        {
-            return null;
-        }
+        //if (responses.Count == questions.Count)
+        //{
+        //    return null;
+        //}
 
         // Randomize and return appropriate question
         
@@ -149,9 +170,27 @@ public class QuestionManager : MonoBehaviour
         print(tempMRQ.ID);
 
         tempOpt.Add(tempMRQ.Correct);
-        tempOpt.Add(tempMRQ.diff1.Distractor1);
-        tempOpt.Add(tempMRQ.diff1.Distractor2);
-        tempOpt.Add(tempMRQ.diff1.Distractor3);
+        print("Difficulty level is at");
+        print(Mathf.Floor(dL.value/3));
+        switch (Mathf.Floor(dL.value/3))
+        {
+            case 0:
+                tempOpt.Add(tempMRQ.diff3.Distractor1);
+                tempOpt.Add(tempMRQ.diff3.Distractor2);
+                tempOpt.Add(tempMRQ.diff3.Distractor3);
+                break;
+            case 1:
+                tempOpt.Add(tempMRQ.diff2.Distractor1);
+                tempOpt.Add(tempMRQ.diff2.Distractor2);
+                tempOpt.Add(tempMRQ.diff2.Distractor3);
+                break;
+            case 2:
+                tempOpt.Add(tempMRQ.diff1.Distractor1);
+                tempOpt.Add(tempMRQ.diff1.Distractor2);
+                tempOpt.Add(tempMRQ.diff1.Distractor3);
+                break;
+        }
+        
 
         
         chosen.Add("ID", tempMRQ.ID);
@@ -174,7 +213,6 @@ public class QuestionManager : MonoBehaviour
             {
                 chosen.Add("Correct", i);
             }
-            print(tempOpt[numbers[tempNum]]);
             StartCoroutine(DownloadOptionImage(tempOpt[numbers[tempNum]], i, chosen));
             finalOpt.Add(tempOpt[numbers[tempNum]]);
             numbers.Remove(numbers[tempNum]);
@@ -252,6 +290,16 @@ public class QuestionManager : MonoBehaviour
 
     public void recordResponse(Dictionary<string, object> questionInfo, int resp, Dictionary<int, Dictionary<string, float>> mouseheatmap, bool answer, float curTime=0f)
     {
+
+        if (answer)
+        {
+            dL.value += 1;
+        }
+        else
+        {
+            dL.value -= 1;
+        }
+
         newQ = true;
         //responses.Add((string)questionInfo["ID"], resp);
         Dictionary<string, object> qToSend = new Dictionary<string, object>();
@@ -265,7 +313,7 @@ public class QuestionManager : MonoBehaviour
         print("Question Number:" + questionNumber);
 
         MRQRecord.Add(questionNumber.ToString(), qToSend);
-        print(JsonConvert.SerializeObject(MRQRecord));
+        //print(JsonConvert.SerializeObject(MRQRecord));
         imageNum = 0;
     }
 
@@ -318,5 +366,10 @@ public class QuestionManager : MonoBehaviour
     public bool isImage()
     {
         return imageLoaded;
+    }
+
+    public int getDifVal()
+    {
+        return (int)dL.value;
     }
 }

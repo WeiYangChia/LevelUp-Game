@@ -37,6 +37,7 @@ public class DoQuestion : MonoBehaviour
     private Button prev;
 
     // Question Parameters:
+    public Slider difVal;
     private Dictionary<string, object> question;
 
     
@@ -65,12 +66,14 @@ public class DoQuestion : MonoBehaviour
     /// <summary>
     /// Start is callled at the very beginning, to intialize all required parameters and setup the first quesiton.
     /// </summary>
-    private void Start()
+    void Awake()
     {
         // Color Setup
         originalColor = background.color;
         HMap = gameObject.GetComponent<mouseHeatMap>();
-        
+        difVal = GameObject.Find("DifSlider").GetComponent<Slider>();
+        QM = GameObject.Find("GameSetUpController").GetComponent<QuestionManager>();
+
     }
 
     /// <summary>
@@ -95,6 +98,7 @@ public class DoQuestion : MonoBehaviour
 
     private void OnEnable()
     {
+
         // Setup UI
         setupNewQuestion();
         background.color = originalColor;
@@ -107,6 +111,7 @@ public class DoQuestion : MonoBehaviour
 
     private void setupNewQuestion()
     {
+        
         // get new Question
         question = getQuestion();
         bonusTimeLimit = (float)question["bonusTimeLimit"];
@@ -155,7 +160,6 @@ public class DoQuestion : MonoBehaviour
     {
         Dictionary<string, object> tempData = new Dictionary<string, object>();
         tempData = QM.getGenQuestion();
-        
 
         if (QM != null)
         {
@@ -268,11 +272,14 @@ public class DoQuestion : MonoBehaviour
         int count = Array.IndexOf(buttons,prev);
         bool answer = (count == (int)question["Correct"]);
 
+
         Dictionary<string, object> toSend = new Dictionary<string, object>();
         Dictionary<int, Dictionary<string, float>> test = HMap.getMaps();
 
         QM.recordResponse(question, count,test, answer, curTime);
         resetButtons();
+
+        difVal.value = QM.getDifVal();
 
         if (pointsAwardable)
         {
