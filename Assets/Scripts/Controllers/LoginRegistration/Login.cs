@@ -107,7 +107,9 @@ public class Login : MonoBehaviour
 
     private void PostToDatabase()
     {
-        User user = new User(username, dob, 0);
+        Difficulty tempDiff = new Difficulty(0, 0, 0, 0);
+        print(JsonUtility.ToJson(tempDiff));
+        User user = new User(username, dob, 0, tempDiff);
         RestClient.Put(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Users/" + localid + ".json", user).Then(onResolved:response => {
             currentUser = user;
             loadScene();
@@ -138,8 +140,9 @@ public class Login : MonoBehaviour
             User user = JsonConvert.DeserializeObject<User>(response.Text);
             username = user.username;
             dob = user.dob;
+            Difficulty tempDiff = user.diff;
             int totalPoints = user.Total_Points;
-            currentUser = new User(username, dob, totalPoints);
+            currentUser = new User(username, dob, totalPoints, tempDiff);
             usernameGet = true;
         });     
     }

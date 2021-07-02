@@ -19,5 +19,6 @@ public class scrollYear : MonoBehaviour
         {
             TMPDropdown.options.Add(new TMPro.TMP_Dropdown.OptionData() { text = t.ToString() });
         }
+        TMPDropdown.value = 1;
     }
 }

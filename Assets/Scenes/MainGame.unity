@@ -32098,15 +32098,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97164eb8332364281a623951596f01c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  difVal: {fileID: 26575441}
+  DQ: {fileID: 1709889322}
   LS: {fileID: 687544815}
+  dL: {fileID: 26575441}
   Category: 0
-  Difficulty: 0
+  catLevel: 0
   questionNumber: 0
   questions: []
   choices: []
   MRQ: []
   difLevels: []
+  catList:
+  - TR
+  - RT
+  - TX
+  - FL
 --- !u!114 &1333762361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32122,6 +32128,7 @@ MonoBehaviour:
   ArenaCon: {fileID: 499636596}
   mapIndex: 0
   Category: 0
+  catLevel: 0
   Difficulty: 0
   spawnPoint: {fileID: 1608176130}
   spawnPoints1:
@@ -42876,6 +42883,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   zombieList: []
   spawnPoint: {fileID: 1608176130}
+--- !u!114 &1709889322 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 866329535213037244, guid: e5bca2c21ec6433488fde0d077cf4868,
+    type: 3}
+  m_PrefabInstance: {fileID: 3129452725417417496}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28d8b08cf17544e959402fe8219801ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1711098957
 GameObject:
   m_ObjectHideFlags: 0
@@ -52409,9 +52428,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 866329535213037244, guid: e5bca2c21ec6433488fde0d077cf4868,
         type: 3}
-      propertyPath: difVal
+      propertyPath: QM
       value: 
-      objectReference: {fileID: 26575441}
+      objectReference: {fileID: 1333762360}
     - target: {fileID: 866329535213037247, guid: e5bca2c21ec6433488fde0d077cf4868,
         type: 3}
       propertyPath: m_Pivot.x
@@ -52515,6 +52534,21 @@ PrefabInstance:
     - target: {fileID: 866329535213037247, guid: e5bca2c21ec6433488fde0d077cf4868,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1690709504303452496, guid: e5bca2c21ec6433488fde0d077cf4868,
+        type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1690709504303452496, guid: e5bca2c21ec6433488fde0d077cf4868,
+        type: 3}
+      propertyPath: m_WholeNumbers
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1690709504303452496, guid: e5bca2c21ec6433488fde0d077cf4868,
+        type: 3}
+      propertyPath: m_Navigation.m_Mode
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4700096824949613347, guid: e5bca2c21ec6433488fde0d077cf4868,

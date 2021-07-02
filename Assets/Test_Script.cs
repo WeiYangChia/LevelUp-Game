@@ -15,13 +15,13 @@ public class Test_Script : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        RestClient.Get(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/QuestionList/Matrix Reasoning.json").Then(onResolved: response =>
-        {
-            print("Loaded");
-            print(response.Text);
-            questionlist = JsonConvert.DeserializeObject<List<string> > (response.Text);
-            print("JSON Loaded");
-        });
+        //RestClient.Get(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/QuestionList/Matrix Reasoning.json").Then(onResolved: response =>
+        //{
+        //    print("Loaded");
+        //    print(response.Text);
+        //    questionlist = JsonConvert.DeserializeObject<List<string> > (response.Text);
+        //    print("JSON Loaded");
+        //});
         
     }
 

@@ -68,7 +68,7 @@ public class CodeMatchmakingRoomController : MonoBehaviour
         if (!readyToStart()){
             return;
         }
-        
+
         SceneManager.LoadScene("MainGame");
     }
 
