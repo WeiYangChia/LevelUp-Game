@@ -21,7 +21,6 @@ public class QuestionManager : MonoBehaviour
 {
     // Singleton
     public static QuestionManager QM;
-    public static GameSetUp GS;
     public DoQuestion DQ;
     public Loading_Screen LS;
     public Slider dL;
@@ -69,7 +68,6 @@ public class QuestionManager : MonoBehaviour
         // Difficulty = MapController.Difficulty;
         try
         {
-            GS = GS.GetComponent<GameSetUp>();
             Category = LobbySetUp.LS.category;
             catLevel = LobbySetUp.LS.catLevel;
         }
@@ -78,7 +76,7 @@ public class QuestionManager : MonoBehaviour
             Category = 0;
             catLevel = 1;
         }
-
+        print("Category is " + catList[Category]);
         ended = false;
 
         RestClient.Get(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Question/Matrix Reasoning/"+ catList[Category]+"/LO1"+".json").Then(onResolved: response =>

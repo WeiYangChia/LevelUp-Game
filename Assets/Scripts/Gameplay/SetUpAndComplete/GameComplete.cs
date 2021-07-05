@@ -33,12 +33,15 @@ public class GameComplete : MonoBehaviour
 
     // Question Manager for responses
     private QuestionManager QM;
+    public static GameSetUp GS;
 
     // Parameters related to game results UI
     public GameObject ResultsPage;
     public bool rankProcessed = false;
     bool highscoreDisplayUpdated = false;
-
+    public int Category;
+    public int catLevel;
+    public string[] catList = { "TR", "RT", "TX", "FL" };
 
     //UI elements:
     public Image avatar;
@@ -78,6 +81,17 @@ public class GameComplete : MonoBehaviour
             localID = "s0TESMzP9iaS4o0n4r30BIQJC3u2";
             localName = "uiyot";
             dob = "January2021";
+        }
+        try
+        {
+            GS = GS.GetComponent<GameSetUp>();
+            Category = LobbySetUp.LS.category;
+            catLevel = LobbySetUp.LS.catLevel;
+        }
+        catch (Exception e)
+        {
+            Category = 0;
+            catLevel = 1;
         }
 
         // End Gameplay
@@ -262,7 +276,7 @@ public class GameComplete : MonoBehaviour
 
     void displayResults()
     {
-        string urlRecord = "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Highscore.json";
+        string urlRecord = "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Highscore/Matrix Reasoning/" + catList[Category] + "/LO1.json";
         highscoreDisplayUpdated = true;
 
         if (localName == null) { localName = "uiyot"; };
@@ -284,7 +298,7 @@ public class GameComplete : MonoBehaviour
             print(JsonConvert.SerializeObject(toSend));
             RestClient.Put(url: urlRecord, JsonConvert.SerializeObject(toSend));
             ResultsPage.GetComponent<HighscoreTable>().enabled = true;
-            ResultsPage.GetComponent<HighscoreTable>().endGameUpdateTable(toSend);
+            ResultsPage.GetComponent<HighscoreTable>().endGameUpdateTable(toSend, cur.Points, Highscores[localID][localName]);
             ResultsPage.SetActive(true);
             
         }).Catch(error =>

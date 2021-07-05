@@ -21,6 +21,9 @@ public class TutorialPlatform : MonoBehaviour
     // Information on ALL existing players in game:
     public GameObject player = null;
     public PlayerController PC;
+    public GameObject canva;
+    public GameObject questionObj = null;
+    public DoQuestion DQ;
 
     // Steps flags:
     public int stage = 0;
@@ -33,6 +36,7 @@ public class TutorialPlatform : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
         tutorialInstruction = tutorialInstructionParent.GetComponent<Image>();
         // #1 Intro panel to show basic controls (how to move) + (how to jump) + (zoom out)
 
@@ -62,6 +66,9 @@ public class TutorialPlatform : MonoBehaviour
     {
         player = GameObject.FindWithTag("Player");
         PC = player.GetComponent<PlayerController>();
+        questionObj = canva.transform.Find("Question(Clone)").gameObject;
+        DQ = questionObj.GetComponent<DoQuestion>();
+
 
         if (player != null && !inDialogue && PC.moveable && !inStage){
             switch(stage){
@@ -176,6 +183,8 @@ public class TutorialPlatform : MonoBehaviour
                 break;
             case 5:
                 print("Great job! Now that you've got the hang of the game, we'll let you continue practicing! In real play, time rewards have a 5 second time limit, and you can get questions wrong! Click EXIT at the top left hand corner to finish the tutorial. Remember to get off the current block before it drops! Have fun!");
+                DQ.changeMode(false);
+                print(DQ.tutorial);
                 break;
             default:
                 break;

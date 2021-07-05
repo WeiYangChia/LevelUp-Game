@@ -207,7 +207,7 @@ public class PlayerController : MonoBehaviour
                 question.SetActive(false);
                 countdownPanel.SetActive(true);
 
-                StartCoroutine("Countdown",1);
+                StartCoroutine("Countdown",0);
             }
     }
     /// <summary>
