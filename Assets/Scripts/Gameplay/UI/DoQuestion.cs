@@ -45,6 +45,7 @@ public class DoQuestion : MonoBehaviour
     public bool inQuestion = false;
     public bool answered = false; 
     public bool correct = false;
+    public bool tutorial;
 
     public float bonusTimeLimit;
     public bool bonusAwardable; 
@@ -300,12 +301,18 @@ public class DoQuestion : MonoBehaviour
             }
             player.GetComponent<PlayerController>().ChangePoints(points);
         }
-        
+
+        print("Answer is " + tutorial);
+        if (tutorial)
+        {
+            answer = true;
+        }
 
         answered = true;
         correct = answer;
         inQuestion = false;
         prev = null;
+
         if (answer)
         {
             StartCoroutine("Disappear");
@@ -390,5 +397,10 @@ public class DoQuestion : MonoBehaviour
     void deactivateUI()
     {
         gameObject.SetActive(false);   
+    }
+
+    public void changeMode(bool val)
+    {
+        tutorial = val;
     }
 }

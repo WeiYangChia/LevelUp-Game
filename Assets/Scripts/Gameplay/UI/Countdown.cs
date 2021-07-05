@@ -47,7 +47,7 @@ public class Countdown : MonoBehaviour
     private void Update()
     {
         if (!started){
-            StartCoroutine(Delay(5));
+            StartCoroutine(Delay(3));
         }
 
         if (Question == null){

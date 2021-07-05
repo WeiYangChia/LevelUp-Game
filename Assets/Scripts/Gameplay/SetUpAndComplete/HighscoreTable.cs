@@ -16,12 +16,14 @@ public class HighscoreTable : MonoBehaviour
     public Transform entryContainer;
     public Transform entryTemplate;
     float templateHeight = 30f;
+    public TMP_Text CurrentScore;
+    public TMP_Text YourHighscore;
 
     /// <summary>
     /// Updates the table at the end of the game.
     /// </summary>
     /// <param name="records">The records.</param>
-    public void endGameUpdateTable(Dictionary<string, Dictionary<string, int>> records)
+    public void endGameUpdateTable(Dictionary<string, Dictionary<string, int>> records, int curValue, int highVal)
     {
         int count = 1;
         foreach (KeyValuePair<string, Dictionary<string, int>> kv in records) // loop through both
@@ -40,6 +42,8 @@ public class HighscoreTable : MonoBehaviour
             }
             if (count == 8) { break; };
         }
+        CurrentScore.text = curValue.ToString();
+        YourHighscore.text = highVal.ToString();
 
     }
 

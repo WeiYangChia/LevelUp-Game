@@ -23,6 +23,7 @@ public class GameSetUp : MonoBehaviour
     public int Category;
     public int catLevel;
     public int Difficulty;
+    public bool Tutorial;
 
     // Spawn points for each player
     public Transform spawnPoint;
@@ -42,6 +43,7 @@ public class GameSetUp : MonoBehaviour
 
     // Points list in UI to track player points
     public TextMeshProUGUI pointsUI;
+    string curUserName;
 
     /// <summary>
     /// This function is called at the very start of the game, to allow the script to access the choices made by players in the previous scene.
@@ -70,7 +72,7 @@ public class GameSetUp : MonoBehaviour
         catch (Exception e){
             print("In Tutorial");
         }
-        
+
 
         // // select correct spawnpoints based on map chosen
         // Transform[] spawnPoints = null;
@@ -95,7 +97,16 @@ public class GameSetUp : MonoBehaviour
 
         // Initialize player avatar settings
 
-        string curUserName = "Tester";
+        try
+        {
+            curUserName = Login.username;
+        }
+        catch (Exception e)
+        {
+            curUserName = "Tester";
+        }
+
+        if (curUserName == null) { curUserName = "Tester"; };
 
         int avatarSelection = 21;
 
@@ -152,6 +163,10 @@ public class GameSetUp : MonoBehaviour
         question.GetComponent<DoQuestion>().tag = "Q1";
         question.GetComponent<DoQuestion>().player = player;
         question.GetComponent<DoQuestion>().QM = gameObject.GetComponent<QuestionManager>();
+        if (Tutorial)
+        {
+            question.GetComponent<DoQuestion>().changeMode(true);
+        }
         question.transform.SetParent(canvas.transform);
         question.SetActive(false);
 

@@ -49,6 +49,10 @@ public class Login : MonoBehaviour
         {
             StartCoroutine("displayInvalidUser");
         }
+        else if (signUpSuccess == false && !displayFail)
+        {
+            StartCoroutine("displayInvalidUser");
+        }
     }
 
     // Apparently you need to have password length > 6 and cannot sign up with same email otherwise error
@@ -126,6 +130,7 @@ public class Login : MonoBehaviour
         failLogin.gameObject.SetActive(false);
         displayFail = false;
         success = null;
+        signUpSuccess = null;
     }
 
     public void loadScene()
