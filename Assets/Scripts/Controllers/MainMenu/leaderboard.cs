@@ -26,6 +26,7 @@ public class leaderboard : MonoBehaviour
 
     private void Start()
     {
+
         HighscoreUpdates();
 
     }

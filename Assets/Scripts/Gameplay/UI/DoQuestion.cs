@@ -19,13 +19,13 @@ public class DoQuestion : MonoBehaviour
 {
     // UI Elements:
     public TextMeshProUGUI description;
-    Button[] buttons = new Button[4];
+    Toggle[] buttons = new Toggle[4];
 
     public RawImage QImage;
-    public Button b1;
-    public Button b2;
-    public Button b3;
-    public Button b4;
+    public Toggle b1;
+    public Toggle b2;
+    public Toggle b3;
+    public Toggle b4;
 
     public Button submit;
     public TextMeshProUGUI submitText;
@@ -137,10 +137,11 @@ public class DoQuestion : MonoBehaviour
         // set listeners of the buttons, to determine which corresponds to the wrong and right answers
 
         int i = 0;
-        foreach (Button button in buttons)
+        foreach (Toggle button in buttons)
         {
-            button.onClick.AddListener(delegate { TaskOnClick(button); });
-            button.transform.GetChild(1).gameObject.GetComponent<RawImage>().texture = (Texture2D)question[i.ToString()];
+            //button.onClick.AddListener(delegate { TaskOnClick(button); });
+            print(button.transform.GetChild(0));
+            button.transform.GetChild(3).gameObject.GetComponent<RawImage>().texture = (Texture2D)question[i.ToString()];
             i++;
         }
         submit.onClick.AddListener(SubmitClick);
@@ -241,7 +242,7 @@ public class DoQuestion : MonoBehaviour
     {
         for (int i = 0; i < 4; i++)
         {
-            buttons[i].onClick.RemoveAllListeners();
+            //buttons[i].onClick.RemoveAllListeners();
         }
     }
     /// <summary>
@@ -251,26 +252,34 @@ public class DoQuestion : MonoBehaviour
     /// Finally, it deactivates the question UI
     /// </summary>
     /// <param name="index"></param>
-    void TaskOnClick(Button buttonSel)
-    {
-        if (buttons.Contains(buttonSel))
-        {
-            foreach (Button button in buttons)
-            {
-                if (button == buttonSel)
-                {
-                    button.gameObject.SetActive(true);
-                    button.Select();
-                    prev = button;
-                }
-            }
-        }
-    }
+    //void TaskOnClick(Button buttonSel)
+    //{
+    //    if (buttons.Contains(buttonSel))
+    //    {
+    //        foreach (Button button in buttons)
+    //        {
+    //            if (button == buttonSel)
+    //            {
+    //                button.gameObject.SetActive(true);
+    //                button.Select();
+    //                prev = button;
+    //            }
+    //        }
+    //    }
+    //}
 
     void SubmitClick()
     {
-        if (prev == null) { return; };
-        int count = Array.IndexOf(buttons,prev);
+        int count = 0;
+        foreach (var t in buttons) 
+        {
+            if (t.isOn)
+            {
+                count = Array.IndexOf(buttons, t);
+            }
+        }
+            
+
         bool answer = (count == (int)question["Correct"]);
 
 
@@ -278,7 +287,7 @@ public class DoQuestion : MonoBehaviour
         Dictionary<int, Dictionary<string, float>> test = HMap.getMaps();
 
         QM.recordResponse(question, count,test, answer, curTime);
-        resetButtons();
+        //resetButtons();
 
         difVal.value = QM.getDifVal();
 

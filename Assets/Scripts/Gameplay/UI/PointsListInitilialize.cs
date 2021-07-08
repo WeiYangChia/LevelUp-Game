@@ -23,6 +23,12 @@ public class PointsListInitilialize : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        StartCoroutine(OnStart());
+    }
+
+    IEnumerator OnStart()
+    {
+        yield return new WaitForSeconds(1);
         PlayerController PC = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
 
         setUpBoxColor(PC.colorIndex);

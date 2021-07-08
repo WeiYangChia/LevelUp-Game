@@ -11721,10 +11721,20 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 761450981}
     m_Modifications:
+    - target: {fileID: 110310237380325690, guid: e5bca2c21ec6433488fde0d077cf4868,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 866329535213037240, guid: e5bca2c21ec6433488fde0d077cf4868,
         type: 3}
       propertyPath: m_Name
       value: Question Panel
+      objectReference: {fileID: 0}
+    - target: {fileID: 866329535213037240, guid: e5bca2c21ec6433488fde0d077cf4868,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 866329535213037247, guid: e5bca2c21ec6433488fde0d077cf4868,
         type: 3}
@@ -11835,6 +11845,11 @@ PrefabInstance:
         type: 3}
       propertyPath: viewIdField
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5193689557007819293, guid: e5bca2c21ec6433488fde0d077cf4868,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5bca2c21ec6433488fde0d077cf4868, type: 3}
@@ -22522,6 +22537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc818cac925ee4f52a8240472a400301, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  idToken: 
   ResultsPage: {fileID: 0}
   rankProcessed: 0
   Category: 0
@@ -27153,7 +27169,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -36575,7 +36591,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2126226515
 RectTransform:
   m_ObjectHideFlags: 0

@@ -23,10 +23,10 @@ public class HighscoreTable : MonoBehaviour
     /// Updates the table at the end of the game.
     /// </summary>
     /// <param name="records">The records.</param>
-    public void endGameUpdateTable(Dictionary<string, Dictionary<string, int>> records, int curValue, int highVal)
+    public void endGameUpdateTable(List<List<string>> records, int curValue, int highVal)
     {
         int count = 1;
-        foreach (KeyValuePair<string, Dictionary<string, int>> kv in records) // loop through both
+        foreach (List<string> kv in records) // loop through both
         {
             Transform entryTransform = Instantiate(entryTemplate, entryContainer);
             RectTransform entryRectTransform = entryTransform.GetComponent<RectTransform>();
@@ -34,13 +34,10 @@ public class HighscoreTable : MonoBehaviour
             entryTransform.gameObject.SetActive(true);
 
             entryTransform.Find("Rank").GetComponent<TextMeshProUGUI>().text = count.ToString();
-            foreach (KeyValuePair<string, int> kv2 in kv.Value)
-            {
-                entryTransform.Find("Name").GetComponent<TextMeshProUGUI>().text = kv2.Key.ToString();
-                entryTransform.Find("Points").GetComponent<TextMeshProUGUI>().text = kv2.Value.ToString();
-
-            }
-            if (count == 8) { break; };
+            entryTransform.Find("Name").GetComponent<TextMeshProUGUI>().text = kv[0];
+            entryTransform.Find("Points").GetComponent<TextMeshProUGUI>().text = kv[1];
+            count += 1;
+            if (count > 8) { break; };
         }
         CurrentScore.text = curValue.ToString();
         YourHighscore.text = highVal.ToString();
