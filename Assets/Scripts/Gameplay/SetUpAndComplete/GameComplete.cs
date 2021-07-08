@@ -9,6 +9,7 @@ using TMPro;
 using Photon.Pun;
 using System.Collections;
 using System.Linq;
+using System;
 
 /// <summary>
 /// This script is used to determine the required processing when the game ends.
@@ -25,6 +26,7 @@ public class GameComplete : MonoBehaviour
     public static string localID;
     public static string localName;
     public static string dob;
+    public string idToken;
     // Information regarding all players
     private List<PlayerController> players = new List<PlayerController>();
     private List<Record> records = new List<Record>();
@@ -68,6 +70,7 @@ public class GameComplete : MonoBehaviour
             localID = Login.localid;
             localName = Login.username;
             dob = Login.dob;
+            idToken = Login.idToken;
         }
         catch (Exception e)
         {
@@ -202,11 +205,9 @@ public class GameComplete : MonoBehaviour
                 rank);
 
             records.Add(cur);
-            print(cur);
             Dictionary<string, object> mrqStuff = QM.getMRQ();
 
             cur.attachResponses(mrqStuff);
-            print(JsonConvert.SerializeObject(mrqStuff));
             uploadRecord(cur, rank);
             // If the current player is the local player, upload record (with player responses) to database.
             // Essentially, each player only uploads their own record, to avoid duplicates.
@@ -232,16 +233,15 @@ public class GameComplete : MonoBehaviour
 
     void uploadRecord(Record record, int rank)
     {
-
+        long elapsedTicks = DateTime.Now.Ticks;
         if (localID == null) { localID = "s0TESMzP9iaS4o0n4r30BIQJC3u2"; };
         print("Uploading record");
         // Upload record
-        string urlRecord = "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Records/" + localID+".json";
-        print(JsonConvert.SerializeObject(record));
-        RestClient.Post(url: urlRecord, JsonConvert.SerializeObject(record)).Then(onResolved: response => {
+        string urlRecord = "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Records/" + localID+"/"+ elapsedTicks.ToString()+".json";
+        RestClient.Put(url: urlRecord, JsonConvert.SerializeObject(record)).Then(onResolved: response => {
             print("Success");
         }).Catch(error => {
-            print("Failed");
+            print("Records Failed");
         });
 
         // Calculate achievement points to be awarded based on rank
@@ -265,7 +265,7 @@ public class GameComplete : MonoBehaviour
             RestClient.Put(url: urlRecord, JsonConvert.SerializeObject(totalPoints)).Then(onResolved: response => {
                 print("Success");
             }).Catch(error => {
-                print("Failed");
+                print("Score Failed");
             });
         });
     }
@@ -283,27 +283,63 @@ public class GameComplete : MonoBehaviour
 
         RestClient.Get(url: urlRecord).Then(onResolved: response =>
         {
-            print(response.Text);
             Dictionary<string, Dictionary<string, int>> Highscores = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, int>>>(response.Text);
-            try
+            if (Highscores.ContainsKey(localID))
             {
                 if (cur.Points > Highscores[localID][localName]) { Highscores[localID][localName] = cur.Points; };
             }
-            catch
+            else
             {
-                Highscores[localID][localName] = cur.Points;
+                Dictionary<string, int> tempDic = new Dictionary<string, int>();
+                tempDic.Add(localName, cur.Points);
+                print("Error name not present!");
+                Highscores.Add(localID, tempDic);
             }
 
-            var toSend =  Highscores.ToDictionary(x => x.Key, x => x.Value.OrderByDescending(y => y.Value).ToDictionary(y => y.Key, y => y.Value));
-            print(JsonConvert.SerializeObject(toSend));
-            RestClient.Put(url: urlRecord, JsonConvert.SerializeObject(toSend));
+            List<string> usernames = new List<string>();
+            List<int> points = new List<int>();
+
+            foreach (KeyValuePair<string, Dictionary<string, int>> kv in Highscores)
+            {
+                foreach (KeyValuePair<string, int> kv2 in kv.Value)
+                {
+                    usernames.Add(kv2.Key);
+                    points.Add(kv2.Value);
+                }
+                
+            }
+
+            List<List<string>> toSend = new List<List<string>>();
+            int lenList = points.Count;
+            if (lenList > 8)
+            {
+                lenList = 8;
+            }
+
+            for (int j = 0; j < lenList; j++)
+            {
+                int tempMax = points[0];
+                int memSpace = 0;
+                for (int i = 0; i < points.Count; i++)
+                {
+                    if (tempMax < points[i])
+                    {
+                        tempMax = points[i];
+                        memSpace = i;
+                    }
+                }
+                List<string> tempLst = new List<string>();
+                tempLst.Add(usernames[memSpace]);
+                tempLst.Add(points[memSpace].ToString());
+                toSend.Add(tempLst);
+                usernames.RemoveAt(memSpace);
+                points.RemoveAt(memSpace);
+            }
+
+            RestClient.Put(url: urlRecord, JsonConvert.SerializeObject(Highscores));
             ResultsPage.GetComponent<HighscoreTable>().enabled = true;
             ResultsPage.GetComponent<HighscoreTable>().endGameUpdateTable(toSend, cur.Points, Highscores[localID][localName]);
             ResultsPage.SetActive(true);
-            
-        }).Catch(error =>
-        {
-            print("Failed");
         });
 
     }
