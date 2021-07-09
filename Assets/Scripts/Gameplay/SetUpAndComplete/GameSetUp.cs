@@ -110,19 +110,20 @@ public class GameSetUp : MonoBehaviour
 
         int avatarSelection = 21;
 
-        try{
+        try
+        {
             avatarSelection = LobbySetUp.LS.playerData;
             Category = LobbySetUp.LS.category;
             catLevel = LobbySetUp.LS.catLevel;
         }
-        catch (Exception e){
+        catch (Exception e)
+        {
             avatarSelection = 21;
             Category = 0;
             catLevel = 1;
         }
 
-        string avatarPath = "";
-
+        string avatarPath = "Astronaut";
         switch (avatarSelection / 10)
         {
             case 1:

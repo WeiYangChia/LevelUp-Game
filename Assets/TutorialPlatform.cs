@@ -64,7 +64,7 @@ public class TutorialPlatform : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        player = GameObject.FindWithTag("Player");
+        player = GameObject.Find("Astronaut(Clone)");
         PC = player.GetComponent<PlayerController>();
         questionObj = canva.transform.Find("Question(Clone)").gameObject;
         DQ = questionObj.GetComponent<DoQuestion>();
