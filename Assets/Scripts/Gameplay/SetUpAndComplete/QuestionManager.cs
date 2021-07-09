@@ -45,7 +45,7 @@ public class QuestionManager : MonoBehaviour
     public Dictionary<string, object> chosen = new Dictionary<string, object>();
     int imageNum = 0;
     public List<string> difLevels = new List<string>();
-    public string[] catList = { "TR" ,"RT","TX","FL"};
+    private string[] catList = { "TR" ,"RO","TX","FL"};
 
     //Phton View
     private PhotonView PV;
@@ -73,7 +73,7 @@ public class QuestionManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            Category = 0;
+            Category = 1;
             catLevel = 1;
         }
         print("Category is " + catList[Category]);
@@ -81,7 +81,7 @@ public class QuestionManager : MonoBehaviour
 
         RestClient.Get(url: "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Question/Matrix Reasoning/"+ catList[Category]+"/LO1"+".json").Then(onResolved: response =>
         {
-            print("Loaded");
+            print("https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Question/Matrix Reasoning/" + catList[Category] + "/LO1" + ".json");
             print(response.Text);
             questions = JsonConvert.DeserializeObject<List<string>>(response.Text);
             print("JSON Loaded");

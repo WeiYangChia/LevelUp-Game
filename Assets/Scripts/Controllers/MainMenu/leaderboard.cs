@@ -20,7 +20,7 @@ public class leaderboard : MonoBehaviour
     public List<Achievement> playerinfo = new List<Achievement>();
 
     public int ShowCat = 0;
-    public string[] catList = { "TR", "RT", "TX", "FL" };
+    private string[] catList = { "TR", "RO", "TX", "FL" };
     int count;
     public List<GameObject> test;
 
@@ -33,7 +33,6 @@ public class leaderboard : MonoBehaviour
     public void HighscoreUpdates()
     {
         string urlRecord = "https://test-ebe23-default-rtdb.asia-southeast1.firebasedatabase.app/Highscore/Matrix Reasoning/" + catList[ShowCat] + "/LO1.json";
-
         // API to retrieve the players information
         RestClient.Get(url: urlRecord).Then(onResolved: response =>
         {

@@ -43,7 +43,7 @@ public class GameComplete : MonoBehaviour
     bool highscoreDisplayUpdated = false;
     public int Category;
     public int catLevel;
-    public string[] catList = { "TR", "RT", "TX", "FL" };
+    private string[] catList = { "TR", "RO", "TX", "FL" };
 
     //UI elements:
     public Image avatar;
