@@ -13,6 +13,8 @@ public class TutorialPlatform : MonoBehaviour
     public GameObject block2;
     public GameObject tutorialInstructionParent;
     Image tutorialInstruction;
+    public TMP_Text tutText;
+    public Image imageControl;
 
     // Current State and Record of active/special scripts and blocks
     TutorialBlock TBscript = null;
@@ -170,19 +172,22 @@ public class TutorialPlatform : MonoBehaviour
 
         switch(stage){
             case 1:
-                print("Hi "+PC.playerName+", welcome to the tutorial! Here, we will teach you the basics of the game! Click Continue");
+                imageControl.enabled = false;
+                tutText.text = "Hi " + PC.playerName + ", welcome to the tutorial! Here, we will teach you the basics of the game. Click Continue.";
                 break;
             case 2:
+                imageControl.enabled = true;
                 print("Show Basic Instructions (Visual): (1) arrows to move (2) spacebar to jump (3) shift to zoom out");
                 break;
             case 3:
-                print("When you enter the arena, blocks will start lighting up. Go to the block to answer a question and earn some points!");
+                imageControl.enabled = false;
+                tutText.text = "When you enter the arena, blocks will start lighting up. Go to the block to answer a question and earn some points!";
                 break;
             case 4:
-                print("Great job on answering the first question! When you get a question right, a coin will appear over your next question block. Collect it to earn a bonus! BUT Quick, get off the current block before it drops!");
+                tutText.text = "Great job on answering the first question! When you get a question right, a coin will appear over your next question block. Collect it to earn a bonus! BUT be quick, get off the current block before it drops!";
                 break;
             case 5:
-                print("Great job! Now that you've got the hang of the game, we'll let you continue practicing! In real play, time rewards have a 5 second time limit, and you can get questions wrong! Click EXIT at the top left hand corner to finish the tutorial. Remember to get off the current block before it drops! Have fun!");
+                tutText.text = "Great job! Now that you've got the hang of the game, I'll let you continue practicing! In real play, time rewards have a 5 second time limit, and you can get questions wrong! Click EXIT at the top left hand corner to finish the tutorial. Remember, get off the current block before it drops! Have fun!";
                 DQ.changeMode(false);
                 print(DQ.tutorial);
                 break;

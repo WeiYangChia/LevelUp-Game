@@ -46,6 +46,7 @@ public class DoQuestion : MonoBehaviour
     public bool answered = false; 
     public bool correct = false;
     public bool tutorial;
+    public bool qanswered = false;
 
     public float bonusTimeLimit;
     public bool bonusAwardable; 
@@ -112,7 +113,7 @@ public class DoQuestion : MonoBehaviour
 
     private void setupNewQuestion()
     {
-        
+        qanswered = false;
         // get new Question
         question = getQuestion();
         bonusTimeLimit = (float)question["bonusTimeLimit"];
@@ -204,16 +205,6 @@ public class DoQuestion : MonoBehaviour
                 submitText.SetText("Submit");
                 submit.GetComponent<Image>().color = Color.green;
             }
-
-            //If the countdown runs out of time, then the question is unanswered and it is process accordingly
-            
-            if (curTime == maxTime){
-                if (!answered && !correct)
-                {
-                    Unanswered();
-                }
-            }
-
             
         }
     }
@@ -270,6 +261,8 @@ public class DoQuestion : MonoBehaviour
 
     void SubmitClick()
     {
+        if (qanswered) { return; }
+        qanswered = true;
         int count = 0;
         foreach (var t in buttons) 
         {
@@ -321,6 +314,7 @@ public class DoQuestion : MonoBehaviour
         correct = answer;
         inQuestion = false;
         prev = null;
+        
 
         if (answer)
         {

@@ -32402,15 +32402,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc818cac925ee4f52a8240472a400301, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  idToken: 
   ResultsPage: {fileID: 1397257181}
   rankProcessed: 0
   Category: 0
   catLevel: 0
-  catList:
-  - TR
-  - RT
-  - TX
-  - FL
   avatar: {fileID: 0}
   rankDisplay: {fileID: 0}
   prevPoints: {fileID: 0}
@@ -32443,11 +32439,6 @@ MonoBehaviour:
   choices: []
   MRQ: []
   difLevels: []
-  catList:
-  - TR
-  - RT
-  - TX
-  - FL
 --- !u!114 &1333762361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52617,20 +52608,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1414151822}
     m_Modifications:
-    - target: {fileID: 110310237380325690, guid: e5bca2c21ec6433488fde0d077cf4868,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 866329535213037240, guid: e5bca2c21ec6433488fde0d077cf4868,
         type: 3}
       propertyPath: m_Name
       value: Question Panel
-      objectReference: {fileID: 0}
-    - target: {fileID: 866329535213037240, guid: e5bca2c21ec6433488fde0d077cf4868,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 866329535213037244, guid: e5bca2c21ec6433488fde0d077cf4868,
         type: 3}
@@ -52746,11 +52727,6 @@ PrefabInstance:
         type: 3}
       propertyPath: viewIdField
       value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5193689557007819293, guid: e5bca2c21ec6433488fde0d077cf4868,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5bca2c21ec6433488fde0d077cf4868, type: 3}
